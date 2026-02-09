@@ -100,13 +100,25 @@ namespace Adiscope.Internal.Platform.Android
 
         public bool Show()
         {
+            AndroidJavaObject activity = null;
+
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
+            {
+                if (unityPlayer == null)
+                {
+                    Debug.LogError("Android.RewardedVideoAdClient<Constructor> UnityPlayer: null");
+                    return false;
+                }
+                activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
+            }
+            
             if (rewardedVideoAd == null)
             {
                 Debug.LogError("Android.RewardedVideoAdClient<Show> RewardedVideoAd: null");
                 return false;
             }
 
-            return rewardedVideoAd.Call<bool>(Values.MTD_SHOW);
+            return rewardedVideoAd.Call<bool>(Values.MTD_SHOW, activity);
         }
 
         public void ShowWithLoad(string unitId)

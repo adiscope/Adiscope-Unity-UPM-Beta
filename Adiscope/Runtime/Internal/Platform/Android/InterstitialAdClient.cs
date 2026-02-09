@@ -96,13 +96,24 @@ namespace Adiscope.Internal.Platform.Android
 
         public bool Show()
         {
+            AndroidJavaObject activity = null;
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
+            {
+                if (unityPlayer == null)
+                {
+                    Debug.LogError("Android.InterstitialAdClient<Constructor> UnityPlayer: null");
+                    return false;
+                }
+                activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
+            }
+
             if (interstitialAd == null)
             {
                 Debug.LogError("Android.InterstitialAdClient<Show> InterstitialAd: null");
                 return false;
             }
 
-            return interstitialAd.Call<bool>(Values.MTD_SHOW);
+            return interstitialAd.Call<bool>(Values.MTD_SHOW, activity);
         }
         
         public void ShowWithLoad(string unitId)

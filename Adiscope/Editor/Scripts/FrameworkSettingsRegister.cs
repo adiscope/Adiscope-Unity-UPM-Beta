@@ -12,6 +12,7 @@ namespace Adiscope
     {
         public const string SERVICE_JSON_KEY_ADMOB         = "com.google.android.gms.ads.APPLICATION_ID";
         public const string SERVICE_JSON_KEY_APPLOVIN      = "applovin.sdk.key";
+        public const string SERVICE_JSON_KEY_AD_REVIEW     = "applovin.ad.review.key";
 
         private const string SERVICE_JSON_KEY_ADISCOPE      = "adiscope";
         private const string SERVICE_JSON_KEY_NETWORK       = "network";
@@ -102,10 +103,29 @@ namespace Adiscope
                     EditorGUILayout.Space();
 
                     GUILayout.BeginHorizontal();
+                    int tnkpubAdapter = serialized.FindProperty("_tnkpubAdapter").intValue;
+                    tnkpubAdapter = EditorGUILayout.Popup("TNKPub Adapter", tnkpubAdapter, OS_Type);
+                    serialized.FindProperty("_tnkpubAdapter").intValue = tnkpubAdapter;
+                    GUILayout.EndHorizontal();
+
+                    EditorGUILayout.Space();
+
+                    GUILayout.BeginHorizontal();
                     int maxAdapter = serialized.FindProperty("_maxAdapter").intValue;
                     maxAdapter = EditorGUILayout.Popup("Max Adapter", maxAdapter, OS_Type);
                     serialized.FindProperty("_maxAdapter").intValue = maxAdapter;
                     GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    bool applovinAdReview = serialized.FindProperty("_applovinAdReview").boolValue;
+                    applovinAdReview = EditorGUILayout.Toggle("Applovin Ad Review", applovinAdReview);
+                    serialized.FindProperty("_applovinAdReview").boolValue = applovinAdReview;
+                    GUILayout.EndHorizontal();
+
+                    EditorGUI.BeginDisabledGroup(!applovinAdReview);
+                    EditorGUILayout.PropertyField(serialized.FindProperty("_applovinAdReviewKey"), new GUIContent("AppLovin Ad Review Key"));
+                    EditorGUI.EndDisabledGroup();
+
                     EditorGUILayout.Space();
 
                     GUILayout.BeginHorizontal();
@@ -227,6 +247,7 @@ namespace Adiscope
                     if (AdiscopeAdapterSettings.GetIsSetting(adNetworkName, isAndroid)) {
                         Dictionary<string, object> networkInfo = adiscopeNetworks[adNetworkName] as Dictionary<string, object>;
                         Dictionary<string, object> networkInfoAds = networkInfo[SERVICE_JSON_KEY_ADS] as Dictionary<string, object>;
+                        Dictionary<string, object> networkInfoSettings = networkInfo[SERVICE_JSON_KEY_SETTINGS] as Dictionary<string, object>;
                         bool rewardedVideoAdEnabled = Boolean.Parse(networkInfoAds[SERVICE_JSON_KEY_REWARDEDVIDEO].ToString());
                         bool interstitialAdEnabled = Boolean.Parse(networkInfoAds[SERVICE_JSON_KEY_INTERSTITIAL].ToString());
                         int adapter = serialized.FindProperty("_" + adNetworkName + "Adapter").intValue;
@@ -260,8 +281,7 @@ namespace Adiscope
                             }
                         }
 
-                        if (AdiscopeAdapterSettings.ADMOB == adNetworkName && networkInfo.ContainsKey(SERVICE_JSON_KEY_SETTINGS) && networkInfo[SERVICE_JSON_KEY_SETTINGS] != null) {
-                            Dictionary<string, object> networkInfoSettings = networkInfo[SERVICE_JSON_KEY_SETTINGS] as Dictionary<string, object>;
+                        if (AdiscopeAdapterSettings.ADMOB == adNetworkName) {
                             if (networkInfoSettings.ContainsKey(SERVICE_JSON_KEY_ADMOB) && networkInfoSettings[SERVICE_JSON_KEY_ADMOB] != null) {
                                 string admobKey = networkInfoSettings[SERVICE_JSON_KEY_ADMOB].ToString();
                                 if (admobKey != null && admobKey.Length > 0) {
@@ -278,8 +298,7 @@ namespace Adiscope
                             if (!isAndroid) {
                                 admobKey = serialized.FindProperty("_admobAppKey_ios").stringValue;
                             }
-                            if ((admobKey == null || admobKey.Length < 1) && networkInfo.ContainsKey(SERVICE_JSON_KEY_SETTINGS) && networkInfo[SERVICE_JSON_KEY_SETTINGS] != null) {
-                                Dictionary<string, object> networkInfoSettings = networkInfo[SERVICE_JSON_KEY_SETTINGS] as Dictionary<string, object>;
+                            if ((admobKey == null || admobKey.Length < 1) && networkInfoSettings != null) {
                                 if (networkInfoSettings.ContainsKey(SERVICE_JSON_KEY_ADMOB) && networkInfoSettings[SERVICE_JSON_KEY_ADMOB] != null) {
                                     string admanagerKey = networkInfoSettings[SERVICE_JSON_KEY_ADMOB].ToString();
                                     if (admanagerKey != null && admanagerKey.Length > 0) {
@@ -292,13 +311,25 @@ namespace Adiscope
                                 }
                             }
                         }
-                        if (AdiscopeAdapterSettings.MAX == adNetworkName && adiscopeInfoSettings != null && adiscopeInfoSettings.ContainsKey(SERVICE_JSON_KEY_ADMOB)) {
-                            string admobKey = adiscopeInfoSettings[SERVICE_JSON_KEY_ADMOB].ToString();
-                            if (admobKey != null && admobKey.Length > 0) {
-                                if (isAndroid) {
-                                    serialized.FindProperty("_admobAppKey_aos").stringValue = admobKey;
-                                } else {
-                                    serialized.FindProperty("_admobAppKey_ios").stringValue = admobKey;
+                        if (AdiscopeAdapterSettings.MAX == adNetworkName) {
+                            if(adiscopeInfoSettings != null && adiscopeInfoSettings.ContainsKey(SERVICE_JSON_KEY_ADMOB))
+                            {
+                                string admobKey = adiscopeInfoSettings[SERVICE_JSON_KEY_ADMOB].ToString();
+                                if (admobKey != null && admobKey.Length > 0){
+                                    if (isAndroid) {
+                                        serialized.FindProperty("_admobAppKey_aos").stringValue = admobKey;
+                                    } else {
+                                        serialized.FindProperty("_admobAppKey_ios").stringValue = admobKey;
+                                    }
+                                }
+                            }
+                            if(networkInfoSettings.ContainsKey(SERVICE_JSON_KEY_AD_REVIEW) && networkInfoSettings[SERVICE_JSON_KEY_AD_REVIEW] != null)
+                            {
+                                string adReviewKey = networkInfoSettings[SERVICE_JSON_KEY_AD_REVIEW].ToString();
+                                if (adReviewKey != null && adReviewKey.Length > 0) {
+                                    if (isAndroid) {
+                                        serialized.FindProperty("_applovinAdReviewKey").stringValue = adReviewKey;
+                                    }
                                 }
                             }
                         }
@@ -325,6 +356,7 @@ namespace Adiscope
         private const string CHARTBOOST = "chartboost";
         private const string PANGLE     = "pangle";
         private const string VUNGLE     = "vungle";
+        private const string TNKPUB     = "tnkpub";
 
         public static bool GetIsSetting(string network, bool isAndroid) {
             if (isAndroid) {
@@ -335,6 +367,7 @@ namespace Adiscope
                     case MAX:
                     case PANGLE:
                     case VUNGLE:
+                    case TNKPUB:
                     return true;
                     default: return false;
                 }
@@ -347,6 +380,7 @@ namespace Adiscope
                     case CHARTBOOST:
                     case MAX:
                     case PANGLE:
+                    case TNKPUB:
                     return true;
                     default: return false;
                 }

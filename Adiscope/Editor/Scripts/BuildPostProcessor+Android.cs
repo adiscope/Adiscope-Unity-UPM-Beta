@@ -38,7 +38,8 @@ namespace Adiscope
                     AdiscopeFrameworkAndroidType.Vungle,
                     AdiscopeFrameworkAndroidType.Inmobi,
                     AdiscopeFrameworkAndroidType.Smaato,
-                    AdiscopeFrameworkAndroidType.Tapjoy
+                    AdiscopeFrameworkAndroidType.Tapjoy,
+                    AdiscopeFrameworkAndroidType.Tnkpub
                 }
             , isProgress);
             bool isUpdateManifest = UpdateAndroidManifest(isProgress);
@@ -486,7 +487,8 @@ android {{
         Vungle,
         Inmobi,
         Smaato,
-        Tapjoy
+        Tapjoy,
+        Tnkpub
     }
 
     static class AdiscopeFrameworkAndroidTypeExtension
@@ -504,15 +506,17 @@ android {{
         private const string INMOBI_FILE_NAME       = "InmobiDependencies.xml";
         private const string SMAATO_FILE_NAME       = "SmaatoDependencies.xml";
         private const string TAPJOY_FILE_NAME       = "TapjoyDependencies.xml";
+        private const string TNKPUB_FILE_NAME       = "TnkpubDependencies.xml";
 
 
         // private const string ADISCOPE_FILE_PATH = "https://github.com/adiscope/Adiscope-Android-Sample/releases/download/";
         private const string ADISCOPE_FILE_PATH = "https://github.com/adiscope/Adiscope-Unity-UPM-Beta/releases/download/";
-        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.0.1/";
-        private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.0.0/";
-        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.0.1/";
-        private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.0.1/";
-        private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.0.0/";
+        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
 
         public static string GetFileName(this AdiscopeFrameworkAndroidType type)
         {
@@ -531,6 +535,7 @@ android {{
                 case AdiscopeFrameworkAndroidType.Inmobi:       return INMOBI_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.Smaato:       return SMAATO_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.Tapjoy:       return TAPJOY_FILE_NAME;
+                case AdiscopeFrameworkAndroidType.Tnkpub:       return TNKPUB_FILE_NAME;
                 default:                                        return null;
             }
         }
@@ -544,6 +549,7 @@ android {{
                 case AdiscopeFrameworkAndroidType.MAX:          return MAX_FILE_PATH;
                 case AdiscopeFrameworkAndroidType.Pangle:       return PANGLE_FILE_PATH;
                 case AdiscopeFrameworkAndroidType.Vungle:       return VUNGLE_FILE_PATH;
+                case AdiscopeFrameworkAndroidType.Tnkpub:       return TNKPUB_FILE_PATH;
                 default:                                        return null;
             }
         }
@@ -560,6 +566,7 @@ android {{
                 case AdiscopeFrameworkAndroidType.MAX:          return (serialized.FindProperty("_maxAdapter").intValue == 1 || serialized.FindProperty("_maxAdapter").intValue == 2);
                 case AdiscopeFrameworkAndroidType.Pangle:       return (serialized.FindProperty("_pangleAdapter").intValue == 1 || serialized.FindProperty("_pangleAdapter").intValue == 2);
                 case AdiscopeFrameworkAndroidType.Vungle:       return (serialized.FindProperty("_vungleAdapter").intValue == 1 || serialized.FindProperty("_vungleAdapter").intValue == 2);
+                case AdiscopeFrameworkAndroidType.Tnkpub:       return (serialized.FindProperty("_tnkpubAdapter").intValue == 1 || serialized.FindProperty("_tnkpubAdapter").intValue == 2);;
                 default:                                        return false;
             }
         }

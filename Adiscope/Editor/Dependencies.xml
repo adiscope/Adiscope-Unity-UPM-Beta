@@ -6,7 +6,7 @@
     <repositories>
       <repository>https://repository.adiscope.com/repository/adiscope-test/</repository>
     </repositories>
-    <androidPackage spec="com.google.android.gms:play-services-ads:24.4.0" />
-    <androidPackage spec="com.nps.adiscope:adiscopeCore:5.0.0.3" />
+    <androidPackage spec="com.google.android.gms:play-services-ads:24.8.0" />
+    <androidPackage spec="com.nps.adiscope:adiscopeCore:5.2.0.0" />
   </androidPackages>
 </dependencies>
