@@ -80,6 +80,7 @@ namespace Adiscope.Internal.Platform.Android
                 return;
             }
 
+            this.interstitialAd.Call(Values.MTD_SET_INTERSTITIAL_AD_LISTENER, this);
             interstitialAd.Call(Values.MTD_LOAD, unitId);
         }
 
@@ -91,6 +92,7 @@ namespace Adiscope.Internal.Platform.Android
                 return false;
             }
 
+            this.interstitialAd.Call(Values.MTD_SET_INTERSTITIAL_AD_LISTENER, this);
             return interstitialAd.Call<bool>(Values.MTD_IS_LOADED, unitId);
         }
 
@@ -113,6 +115,7 @@ namespace Adiscope.Internal.Platform.Android
                 return false;
             }
 
+            this.interstitialAd.Call(Values.MTD_SET_INTERSTITIAL_AD_LISTENER, this);
             return interstitialAd.Call<bool>(Values.MTD_SHOW, activity);
         }
         

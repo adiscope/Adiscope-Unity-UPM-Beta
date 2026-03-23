@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ namespace Adiscope
 
         private const string PATH_ADISCOPE_EDITOR           = "/Adiscope/Editor";
         private static string SettingsPath                  = "Assets/Adiscope/Editor/Adiscope.asset";
+        private const string PATH_LAUNCHER_TEMPLATE         = "Assets/Plugins/Android/launcherTemplate.gradle";
 
         private static string[] OS_Type     = { "None", "AOS & iOS", "AOS", "iOS" };
         private static string[] AOS_Type    = { "None", "AOS(iOS 기능 추가 시 자동 추가)", "AOS", "None(iOS 기능 추가 시 자동 추가)" };
@@ -159,6 +161,10 @@ namespace Adiscope
                     int vungleAdapter = serialized.FindProperty("_vungleAdapter").intValue;
                     vungleAdapter = EditorGUILayout.Popup("Vungle Adapter", vungleAdapter, OS_Type);
                     serialized.FindProperty("_vungleAdapter").intValue = vungleAdapter;
+
+                    int luckyeventAdapter = serialized.FindProperty("_luckyeventAdapter").intValue;
+                    luckyeventAdapter = EditorGUILayout.Popup("Lucky Event", luckyeventAdapter, OS_Type);
+                    serialized.FindProperty("_luckyeventAdapter").intValue = luckyeventAdapter;
                     GUILayout.EndHorizontal();
                     EditorGUILayout.Space();
 
@@ -172,6 +178,11 @@ namespace Adiscope
                     EditorGUILayout.Space();
                     if (GUILayout.Button("Create Adiscope Android & iOS Files", GUILayout.Height(30)))
                     {
+                        string mediaId     = serialized.FindProperty("_mediaID_aos").stringValue;
+                        string mediaSecret = serialized.FindProperty("_mediaSecret_aos").stringValue;
+                        string subDomain   = serialized.FindProperty("_subDomain").stringValue;
+                        UpdateLauncherGradleManifestPlaceholders(mediaId, mediaSecret, subDomain);
+
                         if (BuildPostProcessorForAndroid.CreateAdiscopeAndroidFiles(true)       // Manifest 파일 생성
                             && BuildPostProcessorForIosEdm4u.CreateAdiscopeIosFiles(true)) {
                             EditorUtility.ClearProgressBar();
@@ -339,6 +350,43 @@ namespace Adiscope
             }
         }
 
+        private static void UpdateLauncherGradleManifestPlaceholders(string mediaId, string mediaSecret, string subDomain)
+        {
+            string fullPath = Path.GetFullPath(PATH_LAUNCHER_TEMPLATE);
+            if (!File.Exists(fullPath))
+            {
+                Debug.LogWarning("[Adiscope] launcherTemplate.gradle not found: " + fullPath);
+                return;
+            }
+
+            string newBlock =
+                "manifestPlaceholders = [\n" +
+                "            adiscope_media_id    : \"" + mediaId + "\",\n" +
+                "            adiscope_media_secret: \"" + mediaSecret + "\",\n" +
+                "            adiscope_sub_domain  : \"" + subDomain + "\"\n" +
+                "        ]";
+
+            string content = File.ReadAllText(fullPath);
+
+            // 기존 manifestPlaceholders 블록이 있으면 교체, 없으면 defaultConfig 안에 삽입
+            const string pattern = @"manifestPlaceholders\s*=\s*\[[^\]]*\]";
+            if (Regex.IsMatch(content, pattern, RegexOptions.Singleline))
+            {
+                content = Regex.Replace(content, pattern, newBlock, RegexOptions.Singleline);
+            }
+            else
+            {
+                // versionName 행 바로 뒤에 삽입
+                content = Regex.Replace(
+                    content,
+                    @"(versionName\s+'[^']*')",
+                    "$1\n        " + newBlock);
+            }
+
+            File.WriteAllText(fullPath, content);
+            Debug.Log("[Adiscope] launcherTemplate.gradle manifestPlaceholders updated: mediaId=" + mediaId);
+        }
+
         private static void CreateAdiscopeFrameworksDirectory()
         {
             if (!Directory.Exists(Application.dataPath + PATH_ADISCOPE_EDITOR))
@@ -350,6 +398,7 @@ namespace Adiscope
 
     static class AdiscopeAdapterSettings {
         public const string ADEVENT    = "adevent";
+        public const string LUCKYEVENT = "luckyevent";
         public const string ADMOB      = "admob";
         public const string ADMANAGER  = "admanager";
         public const string MAX        = "max";
@@ -362,6 +411,7 @@ namespace Adiscope
             if (isAndroid) {
                 switch (network) {
                     case ADEVENT:
+                    case LUCKYEVENT:
                     case ADMOB:
                     case CHARTBOOST:
                     case MAX:
@@ -374,6 +424,7 @@ namespace Adiscope
             } else {
                 switch (network) {
                     case ADEVENT:
+                    case LUCKYEVENT:
                     case ADMANAGER:
                     case ADMOB:
                     case VUNGLE:

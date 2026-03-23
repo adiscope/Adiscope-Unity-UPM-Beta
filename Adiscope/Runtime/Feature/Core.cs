@@ -64,8 +64,47 @@ namespace Adiscope.Feature
 
         public void SetUserId(string userId) { this.client.SetUserId(userId); }
 
+        public void SetUserIdChild(string userId, int child) { this.client.SetUserIdChild(userId, child); }
+
         public void GetUnitStatus(string unitId, Action<AdiscopeError, UnitStatus> callback) { this.client.GetUnitStatus(unitId, callback); }
 
         public void SetRewardedCheckParam(string param) { this.client.SetRewardedCheckParam(param); }
+
+
+        public void SetLuckyEventAppId(string eventId, string pid)
+        {
+            this.client.SetLuckyEventAppId(eventId, pid);
+            UnityThread.initUnityThread(true);
+        }
+        
+        public void SetLuckyEventUseSafeAreaWebView(bool useSafeArea)
+        {
+            this.client.SetLuckyEventUseSafeAreaWebView(useSafeArea);
+            UnityThread.initUnityThread(true);
+        }
+
+        public void SetLuckyEventHashMark(string hashMark)
+        {
+            this.client.SetLuckyEventHashMark(hashMark);
+            UnityThread.initUnityThread(true);
+        }
+
+        public void SetLuckyEventBaseUrl(string baseUrl)
+        {
+            this.client.SetLuckyEventBaseUrl(baseUrl);
+            UnityThread.initUnityThread(true);
+        }
+
+        public void SetLuckyEventExtraParam(string key, string value)
+        {
+            this.client.SetLuckyEventExtraParam(key, value);
+            UnityThread.initUnityThread(true);
+        }
+
+        public void ShowLuckyEvent()
+        {
+            this.client.ShowLuckyEvent();
+            UnityThread.initUnityThread(true);
+        }
     }
 }

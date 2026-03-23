@@ -36,13 +36,9 @@ namespace Adiscope.Internal.Platform.IOS
 
 		#region AD APIs 
 
-		[DllImport ("__Internal")]
-		private static extern bool showAdEvent(string unitId, onAdEventOpenedCallback openedCallback, onAdEventClosedCallback closedCallback, 
-			onAdEventFailedToShowCallback failedToShowCallback);
-
 		public bool Show(string unitId)
 		{
-			return showAdEvent(unitId, onAdEventOpened, onAdEventClosed, onAdEventFailedToShow);
+			return false;
 		}
 
 		#endregion

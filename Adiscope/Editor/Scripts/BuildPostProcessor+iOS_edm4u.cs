@@ -15,6 +15,7 @@ namespace Adiscope
             return CopyAdiscopeFrameworks(new List<AdiscopeFrameworkType>() {
                 AdiscopeFrameworkType.Core,
                 AdiscopeFrameworkType.AdEvent,
+                AdiscopeFrameworkType.LuckyEvent,
                 AdiscopeFrameworkType.Admanager,
                 AdiscopeFrameworkType.Admob,
                 AdiscopeFrameworkType.Vungle,
@@ -142,6 +143,7 @@ namespace Adiscope
     public enum AdiscopeFrameworkType {
         Core,
         AdEvent,
+        LuckyEvent,
         Admanager,
         Admob,
         Vungle,
@@ -160,6 +162,7 @@ namespace Adiscope
 
         private const string CORE_FILE_NAME         = "AdiscopeIosDependencies.xml";
         private const string ADEVENT_FILE_NAME      = "AdEventIosDependencies.xml";
+        private const string LUCKYEVENT_FILE_NAME   = "LuckyEventIosDependencies.xml";
         private const string ADMANAGER_FILE_NAME    = "AdmanagerIosDependencies.xml";
         private const string ADMOB_FILE_NAME        = "AdmobIosDependencies.xml";
         private const string VUNGLE_FILE_NAME       = "VungleIosDependencies.xml";
@@ -173,11 +176,12 @@ namespace Adiscope
         private const string PANGLE_FILE_NAME       = "PangleIosDependencies.xml";
         private const string TNKPUB_FILE_NAME       = "TnkpubIosDependencies.xml";
 
-        // private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Sample/releases/download/";
-        private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-Unity-UPM-Beta/releases/download/";
-        private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Sample/releases/download/";
+        private const string ADISCOPE_FILE_PATH2     = "https://github.com/adiscope/Adiscope-iOS-Developer/releases/download/";
+        private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH2 + "2.1.28/";
+        private const string LUCKYEVENT_FILE_PATH   = ADISCOPE_FILE_PATH2 + "2.1.28/";
         private const string ADMANAGER_FILE_PATH    = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH2 + "2.1.28/";
         private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
         private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.2.0/";
         private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.2.0/";
@@ -188,6 +192,7 @@ namespace Adiscope
             switch (type) {
                 case AdiscopeFrameworkType.Core:            return CORE_FILE_NAME;
                 case AdiscopeFrameworkType.AdEvent:         return ADEVENT_FILE_NAME;
+                case AdiscopeFrameworkType.LuckyEvent:      return LUCKYEVENT_FILE_NAME;
                 case AdiscopeFrameworkType.Admanager:       return ADMANAGER_FILE_NAME;
                 case AdiscopeFrameworkType.Admob:           return ADMOB_FILE_NAME;
                 case AdiscopeFrameworkType.Vungle:          return VUNGLE_FILE_NAME;
@@ -208,6 +213,7 @@ namespace Adiscope
             switch (type)
             {
                 case AdiscopeFrameworkType.Core:            return CORE_FILE_PATH;
+                case AdiscopeFrameworkType.LuckyEvent:      return LUCKYEVENT_FILE_PATH;
                 case AdiscopeFrameworkType.Admanager:       return ADMANAGER_FILE_PATH;
                 case AdiscopeFrameworkType.Admob:           return ADMOB_FILE_PATH;
                 case AdiscopeFrameworkType.Vungle:          return VUNGLE_FILE_PATH;
@@ -225,6 +231,7 @@ namespace Adiscope
 
             switch (type) {
                 case AdiscopeFrameworkType.Core:            return true;
+                case AdiscopeFrameworkType.LuckyEvent:      return (serialized.FindProperty("_luckyeventAdapter").intValue == 1 || serialized.FindProperty("_luckyeventAdapter").intValue == 3);
                 case AdiscopeFrameworkType.Admanager:       return (serialized.FindProperty("_admanagerAdapter").intValue == 1 || serialized.FindProperty("_admanagerAdapter").intValue == 3);
                 case AdiscopeFrameworkType.Admob:           return (serialized.FindProperty("_admobAdapter").intValue == 1 || serialized.FindProperty("_admobAdapter").intValue == 3);
                 case AdiscopeFrameworkType.Vungle:          return (serialized.FindProperty("_vungleAdapter").intValue == 1 || serialized.FindProperty("_vungleAdapter").intValue == 3);

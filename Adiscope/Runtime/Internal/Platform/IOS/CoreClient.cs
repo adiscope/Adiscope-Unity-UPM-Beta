@@ -111,6 +111,15 @@ namespace Adiscope.Internal.Platform.IOS
                 throw new System.ArgumentException();
         }
 
+		[DllImport ("__Internal")]
+		private static extern bool setUserIdChild(string user_id, int child);        
+
+        public void SetUserIdChild(string userId, int child)
+        {
+            if (!setUserIdChild(userId, child))
+                throw new System.ArgumentException();
+        }
+
     	[DllImport("__Internal")] 
         private static extern void getUnitStatus(string unitId, onGetUnitStatusCallback callback);
         private delegate void onGetUnitStatusCallback(int code, string description, bool live, bool active);
@@ -176,6 +185,50 @@ namespace Adiscope.Internal.Platform.IOS
             if (!setRewardedCheckParam(param))
                 throw new System.ArgumentException();
         }
+
+        
+        [DllImport ("__Internal")]
+		private static extern void setLuckyEventAppId(string eventId, string pid);
+
+        public void SetLuckyEventAppId(string eventId, string pid) {
+            setLuckyEventAppId(eventId, pid);
+        }
+
+        [DllImport ("__Internal")]
+		private static extern void setLuckyEventUseSafeAreaWebView(bool useSafeArea);
+
+        public void SetLuckyEventUseSafeAreaWebView(bool useSafeArea) {
+            setLuckyEventUseSafeAreaWebView(useSafeArea);
+        }
+
+        [DllImport ("__Internal")]
+		private static extern void setLuckyEventHashMark(string hashMark);
+
+        public void SetLuckyEventHashMark(string hashMark) {
+            setLuckyEventHashMark(hashMark);
+        }
+
+        [DllImport ("__Internal")]
+		private static extern void setLuckyEventBaseUrl(string baseUrl);
+
+        public void SetLuckyEventBaseUrl(string baseUrl) {
+            setLuckyEventBaseUrl(baseUrl);
+        }
+
+        [DllImport ("__Internal")]
+		private static extern void setLuckyEventExtraParam(string key, string value);
+
+        public void SetLuckyEventExtraParam(string key, string value) {
+            setLuckyEventExtraParam(key, value);
+        }
+
+        [DllImport ("__Internal")]
+		private static extern void showLuckyEvent();        
+
+        public void ShowLuckyEvent() {
+            showLuckyEvent();
+        }
+
     }
 }
 

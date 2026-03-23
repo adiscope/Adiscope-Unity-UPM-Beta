@@ -92,6 +92,22 @@ namespace Adiscope.PostProcessor
 
             File.Delete(downloadedPath);
 
+            // AdNetwork
+            PlistElementArray targetAdArray = root.root.CreateArray("AdNetworkIdentifiers");
+            DownloadAdNetworkPlistFile(path);
+            
+            downloadedPath = Path.Combine(path, "AdiscopeAdNetworks.plist");
+            PlistDocument adNetwork = new PlistDocument();
+            adNetwork.ReadFromFile(downloadedPath);
+
+            PlistElementArray adArray = (PlistElementArray)adNetwork.root["AdNetworkIdentifiers"];
+            foreach(PlistElementString item in adArray.values) {
+                Debug.Log("AdNetworkIdentifiers : " + item.value);
+                targetAdArray.AddString(item.value);
+            }
+
+            File.Delete(downloadedPath);
+
             // Media Properties (Admob, Admanager)
             if (root.root.values.ContainsKey("GADApplicationIdentifier")) {
                 root.root.values.Remove("GADApplicationIdentifier");
@@ -127,6 +143,13 @@ namespace Adiscope.PostProcessor
 
         private static void DownloadSkAdNetworkPlistFile(string path) {
             string fileName = "AdiscopeSkAdNetworks.plist";
+            string uriString = prefixURI;
+            uriString += "/" + fileName;
+            (new WebClient()).DownloadFile(new Uri(uriString), Path.Combine(path, fileName));
+        }
+
+        private static void DownloadAdNetworkPlistFile(string path) {
+            string fileName = "AdiscopeAdNetworks.plist";
             string uriString = prefixURI;
             uriString += "/" + fileName;
             (new WebClient()).DownloadFile(new Uri(uriString), Path.Combine(path, fileName));

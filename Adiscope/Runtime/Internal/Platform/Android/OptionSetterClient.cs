@@ -69,6 +69,8 @@ namespace Adiscope.Internal.Platform.Android
 
         public void SetChildYN(string childYN)
         {
+            CoreClient._luckyEventChildYn = childYN;
+
             if (optionSetter == null)
             {
                 Debug.LogError("Android.OptionSetterClient<SetChildYN> OptionSetter: null");

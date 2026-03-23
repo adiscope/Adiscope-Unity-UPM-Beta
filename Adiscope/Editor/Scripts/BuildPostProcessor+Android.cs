@@ -39,7 +39,8 @@ namespace Adiscope
                     AdiscopeFrameworkAndroidType.Inmobi,
                     AdiscopeFrameworkAndroidType.Smaato,
                     AdiscopeFrameworkAndroidType.Tapjoy,
-                    AdiscopeFrameworkAndroidType.Tnkpub
+                    AdiscopeFrameworkAndroidType.Tnkpub,
+                    AdiscopeFrameworkAndroidType.LuckyEvent
                 }
             , isProgress);
             bool isUpdateManifest = UpdateAndroidManifest(isProgress);
@@ -475,6 +476,7 @@ android {{
     // Adapter 제거 시 Dependencies 제를 위해 유지 해야 함
     public enum AdiscopeFrameworkAndroidType
     {
+        LuckyEvent,
         Admob,
         ChartBoost,
         Ironsource,
@@ -493,6 +495,7 @@ android {{
 
     static class AdiscopeFrameworkAndroidTypeExtension
     {
+        private const string LUCKY_EVENT_FILE_NAME  = "AdiscopeLuckyEventDependencies.xml";
         private const string ADMOB_FILE_NAME        = "AdmobDependencies.xml";
         private const string CHARTBOOST_FILE_NAME   = "ChartboostDependencies.xml";
         private const string IRONSOURCE_FILE_NAME   = "IronsourceDependencies.xml";
@@ -511,9 +514,10 @@ android {{
 
         // private const string ADISCOPE_FILE_PATH = "https://github.com/adiscope/Adiscope-Android-Sample/releases/download/";
         private const string ADISCOPE_FILE_PATH = "https://github.com/adiscope/Adiscope-Unity-UPM-Beta/releases/download/";
+        private const string LUCKY_EVENT_FILE_PATH  = ADISCOPE_FILE_PATH + "5.3.0/";
         private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.2.0/";
         private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.2.0/";
+        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.3.0/";
         private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
         private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
         private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
@@ -522,6 +526,7 @@ android {{
         {
             switch (type)
             {
+                case AdiscopeFrameworkAndroidType.LuckyEvent:   return LUCKY_EVENT_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.Admob:        return ADMOB_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.ChartBoost:   return CHARTBOOST_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.Ironsource:   return IRONSOURCE_FILE_NAME;
@@ -544,6 +549,7 @@ android {{
         {
             switch (type)
             {
+                case AdiscopeFrameworkAndroidType.LuckyEvent:   return LUCKY_EVENT_FILE_PATH;
                 case AdiscopeFrameworkAndroidType.Admob:        return ADMOB_FILE_PATH;
                 case AdiscopeFrameworkAndroidType.ChartBoost:   return CHARTBOOST_FILE_PATH;
                 case AdiscopeFrameworkAndroidType.MAX:          return MAX_FILE_PATH;
@@ -561,6 +567,7 @@ android {{
 
             switch (type)
             {
+                case AdiscopeFrameworkAndroidType.LuckyEvent:   return (serialized.FindProperty("_luckyeventAdapter").intValue == 1 || serialized.FindProperty("_luckyeventAdapter").intValue == 2);
                 case AdiscopeFrameworkAndroidType.Admob:        return (serialized.FindProperty("_admobAdapter").intValue == 1 || serialized.FindProperty("_admobAdapter").intValue == 2);
                 case AdiscopeFrameworkAndroidType.ChartBoost:   return (serialized.FindProperty("_chartboostAdapter").intValue == 1 || serialized.FindProperty("_chartboostAdapter").intValue == 2);
                 case AdiscopeFrameworkAndroidType.MAX:          return (serialized.FindProperty("_maxAdapter").intValue == 1 || serialized.FindProperty("_maxAdapter").intValue == 2);

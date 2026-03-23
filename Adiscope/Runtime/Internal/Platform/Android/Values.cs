@@ -20,6 +20,7 @@ namespace Adiscope.Internal.Platform.Android
         public const string PKG_ADMOB_ADAPTER = "com.nps.adiscope.adapter.admob.AdMobAdapter";
         public const string PKG_MAX_ADAPTER = "com.nps.adiscope.adapter.max.MaxAdapter";
         public const string PKG_IUNIT_STATUS = "com.nps.adiscope.model.IUnitStatus";
+        public const string PKG_ADISCOPE_USER_TYPE = "com.nps.adiscope.model.AdiscopeUserType";
 
         public const string MTD_GET_REWARDED_VIDEO_AD_INSTANCE = "getRewardedVideoAdInstance";
         public const string MTD_SET_REWARDED_VIDEO_AD_LISTENER = "setRewardedVideoAdListener";
@@ -36,6 +37,7 @@ namespace Adiscope.Internal.Platform.Android
         public const string MTD_INITIALIZE = "initialize";
         public const string MTD_ISINITIALIZE = "isInitialized";
         public const string MTD_SET_USER_ID = "setUserId";
+        public const string MTD_SET_USER_ID_CHILD = "setUserIdChild";
         public const string MTD_GET_UNIT_STATUS = "getUnitStatus";
         public const string MTD_SET_VOLUME_OFF = "setVolumeOff";
         public const string MTD_SET_REWARDED_CHECK_PARAM = "setRewardedCheckParam";
@@ -53,6 +55,8 @@ namespace Adiscope.Internal.Platform.Android
         public const string MTD_IS_ACTIVE = "isActive";
         public const string MTD_SET_USE_CLOUD_FRONT_PROXY = "setUseCloudFrontProxy";
         public const string MTD_SET_CHILD_YN = "setChildYN";
+        public const string MTD_GET_CHILD_YN = "getChildYN";
+        public const string MTD_FROM_INT = "fromInt";
 
         // Rewarded Interstitial
         public const string MTD_GET_REWARDED_INTERSTITIAL_AD_INSTANCE = "getRewardedInterstitialAdInstance";
@@ -65,6 +69,13 @@ namespace Adiscope.Internal.Platform.Android
         public const string MTD_SET_AD_EVENT_LISTENER = "setAdEventListener";
 
         public const string MTD_SHOW_DEBUG = "showDebug";
+
+        // TNK Lucky Event Builder
+        public const string PKG_TNK_EVENT_BUILDER = "com.adiscope.luckyevent.tnk.TnkEventActivity$TnkEventBuilder";
+        public const string MTD_TNK_SET_USER_NAME = "setUserName";
+        public const string MTD_TNK_SET_CHILD_YN = "setChildYn";
+        public const string MTD_TNK_SET_EVENT_ID_TNK_APP_ID = "setEventIdTnkAppId";
+        public const string MTD_TNK_SHOW = "show";
 
         // unity
         public const string PKG_UNITY_PLAYER = "com.unity3d.player.UnityPlayer";

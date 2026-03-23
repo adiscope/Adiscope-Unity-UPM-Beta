@@ -84,6 +84,7 @@ namespace Adiscope.Internal.Platform.Android
                 return;
             }
             
+            this.rewardedVideoAd.Call(Values.MTD_SET_REWARDED_VIDEO_AD_LISTENER, this);
             rewardedVideoAd.Call(Values.MTD_LOAD, unitId);
         }
 
@@ -95,6 +96,7 @@ namespace Adiscope.Internal.Platform.Android
                 return false;
             }
 
+            this.rewardedVideoAd.Call(Values.MTD_SET_REWARDED_VIDEO_AD_LISTENER, this);
             return rewardedVideoAd.Call<bool>(Values.MTD_IS_LOADED, unitId);
         }
 
@@ -118,6 +120,7 @@ namespace Adiscope.Internal.Platform.Android
                 return false;
             }
 
+            this.rewardedVideoAd.Call(Values.MTD_SET_REWARDED_VIDEO_AD_LISTENER, this);
             return rewardedVideoAd.Call<bool>(Values.MTD_SHOW, activity);
         }
 

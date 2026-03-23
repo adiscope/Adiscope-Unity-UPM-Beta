@@ -105,6 +105,10 @@ namespace Adiscope.Internal.Platform.MockPlatform
         {
         }
 
+        public void SetUserIdChild(string userId, int child)
+        {
+        }
+
         public void GetUnitStatus(string unitId, Action<AdiscopeError, UnitStatus> callback)
         {
             Thread thd = new Thread(() =>
@@ -180,6 +184,30 @@ namespace Adiscope.Internal.Platform.MockPlatform
         public void SetRewardedCheckParam(string param)
         {
             
+        }
+
+        public void SetLuckyEventAppId(string eventId, string pid) {
+
+        }
+        
+        public void SetLuckyEventUseSafeAreaWebView(bool useSafeArea) {
+
+        }
+
+        public void SetLuckyEventHashMark(string hashMark) {
+
+        }
+
+        public void SetLuckyEventBaseUrl(string baseUrl) {
+
+        }
+
+        public void SetLuckyEventExtraParam(string key, string value) {
+
+        }
+
+        public void ShowLuckyEvent() {
+
         }
     }
 }

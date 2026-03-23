@@ -26,7 +26,7 @@ namespace Adiscope
         string _trackingDesc;
 
         [SerializeField]
-        int _adeventAdapter;
+        int _luckyeventAdapter;
 
         [SerializeField]
         int _admobAdapter;
