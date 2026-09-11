@@ -18,32 +18,52 @@ namespace Adiscope.Internal.Platform.Android
         void onInitialized(bool isSuccess)
         {
             Debug.Log("onInitialized : " + isSuccess);
-            if (!isSuccess)
+
+            Action deliver = () =>
             {
-                AndroidJavaObject activity = null;
-                using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
+                if (!isSuccess)
                 {
-                    if (unityPlayer == null)
+                    AndroidJavaObject activity = null;
+                    using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
                     {
-                        Debug.LogError("Android.InterstitialAdClient<Constructor> UnityPlayer: null");
-                        return;
-                    }
-                    activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
-                }
-
-                using (AndroidJavaClass jc = new AndroidJavaClass(Values.PKG_ADISCOPE))
-                {
-                    if (jc == null)
-                    {
-                        Debug.LogError("Android.InterstitialAdClient<GetInterstitialAdClient> " +
-                            Values.PKG_ADISCOPE + ": null");
-                        return;
+                        if (unityPlayer == null)
+                        {
+                            Debug.LogError("Android.InterstitialAdClient<Constructor> UnityPlayer: null");
+                            return;
+                        }
+                        activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
                     }
 
-                    jc.CallStatic(Values.MTD_SEND_CURRENT_ACTIVITY, activity);
+                    using (AndroidJavaClass jc = new AndroidJavaClass(Values.PKG_ADISCOPE))
+                    {
+                        if (jc == null)
+                        {
+                            Debug.LogError("Android.InterstitialAdClient<GetInterstitialAdClient> " +
+                                Values.PKG_ADISCOPE + ": null");
+                            return;
+                        }
+
+                        jc.CallStatic(Values.MTD_SEND_CURRENT_ACTIVITY, activity);
+                    }
                 }
+                if (callback != null)
+                {
+                    callback.Invoke(isSuccess);
+                }
+            };
+
+            if (UnityThread.IsExecuterAlive)
+            {
+                UnityThread.executeInMainThread(deliver);
             }
-            callback.Invoke(isSuccess);
+            else
+            {
+                // executeInMainThread always queues, but only a live executer drains the queue.
+                // Without one, this callback would wait until a later Core.Initialize recreates
+                // the executer, which most callers never do. Invoke it inline instead.
+                Debug.LogWarning("onInitialized : UnityThreadExecuter missing. invoking inline.");
+                deliver();
+            }
         }
     }
 }

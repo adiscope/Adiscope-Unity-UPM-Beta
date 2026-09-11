@@ -12,6 +12,8 @@ namespace Adiscope.Internal.Interface
     internal interface IRewardedInterstitialAdClient
     {
         event EventHandler<UnitStatus> OnGetUnitStatus;
+        event EventHandler<LoadResult> OnLoaded;
+        event EventHandler<LoadFailure> OnFailedToLoad;
         event EventHandler<ShowResult> OnSkip;
         event EventHandler<ShowResult> OnOpened;
         event EventHandler<ShowResult> OnClosed;
@@ -19,17 +21,25 @@ namespace Adiscope.Internal.Interface
         event EventHandler<ShowFailure> OnFailedToShow;
 
         event EventHandler<UnitStatus> OnGetUnitStatusBackground;
+        event EventHandler<LoadResult> OnLoadedBackground;
+        event EventHandler<LoadFailure> OnFailedToLoadBackground;
         event EventHandler<ShowResult> OnSkipBackground;
         event EventHandler<ShowResult> OnOpenedBackground;
         event EventHandler<ShowResult> OnClosedBackground;
         event EventHandler<RewardItem> OnRewardedBackground;
         event EventHandler<ShowFailure> OnFailedToShowBackground;
 
+        void LoadRewardedInterstitial(string unitId);
+
         void PreLoadAllRewardedInterstitial();
 
         void PreLoadRewardedInterstitial(string[] unitIds);
 
+        bool IsLoadedRewardedInterstitial(string unitId);
+
         bool ShowRewardedInterstitial(string unitId);
+
+        bool ShowWithPopupRewardedInterstitial(string unitId);
 
         bool GetUnitStatusRewardedInterstitial(string unitId);
     }

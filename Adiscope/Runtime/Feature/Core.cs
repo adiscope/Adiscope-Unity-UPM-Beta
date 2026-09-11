@@ -22,20 +22,20 @@ namespace Adiscope.Feature
 
         public void Initialize(Action<bool> callback = null)
         {
-            this.client.Initialize(callback);
             UnityThread.initUnityThread(true);
+            this.client.Initialize(callback);
         }
 
         public void Initialize(Action<bool> callback = null, string callbackTag = "")
         {
-            this.client.Initialize(callback, callbackTag);
             UnityThread.initUnityThread(true);
+            this.client.Initialize(callback, callbackTag);
         }
 
         public void Initialize(Action<bool> callback = null, string callbackTag = "", string childYN = "")
         {
-            this.client.Initialize(callback, callbackTag, childYN);
             UnityThread.initUnityThread(true);
+            this.client.Initialize(callback, callbackTag, childYN);
         }
 
         public void Initialize(string mediaId, string mediaSecret, string callbackTag = "", Action<bool> callback = null)
@@ -45,8 +45,8 @@ namespace Adiscope.Feature
 
         public void Initialize(string mediaId, string mediaSecret, string callbackTag = "", string childYN = "", Action<bool> callback = null)
         {
-            this.client.Initialize(mediaId, mediaSecret, callbackTag, childYN, callback);
             UnityThread.initUnityThread(true);
+            this.client.Initialize(mediaId, mediaSecret, callbackTag, childYN, callback);
         }
 
         public void InitializeTest(string mediaId, string mediaSecret, string callbackTag = "", Action<bool> callback = null)
@@ -56,8 +56,8 @@ namespace Adiscope.Feature
 
         public void InitializeTest(string mediaId, string mediaSecret, string callbackTag = "", string childYN = "", Action<bool> callback = null)
         {
-            this.client.InitializeTest(mediaId, mediaSecret, callbackTag, childYN, callback);
             UnityThread.initUnityThread(true);
+            this.client.InitializeTest(mediaId, mediaSecret, callbackTag, childYN, callback);
         }
 
         public bool IsInitialized() { return this.client.IsInitialized(); }

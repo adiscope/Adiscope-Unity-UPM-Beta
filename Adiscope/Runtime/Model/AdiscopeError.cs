@@ -25,7 +25,8 @@ namespace Adiscope.Model
             INVALID_ADID            = 10,
             TIME_OUT                = 11,
             SHOW_CALLED_BEFORE_LOAD = 12,
-            ADID_IS_NOT_AVAILABLE   = 13
+            INSUFFICIENT_MEMORY     = 13,
+            NOT_INITIALIZED         = 14
         };
 
         public ErrorCode Code { get; private set; }

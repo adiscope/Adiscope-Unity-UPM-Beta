@@ -16,6 +16,8 @@ namespace Adiscope.Internal.Platform.Android
     internal class RewardedInterstitialAdClient : AndroidJavaProxy, IRewardedInterstitialAdClient
     {
 		public event EventHandler<UnitStatus> OnGetUnitStatus;
+        public event EventHandler<LoadResult> OnLoaded;
+        public event EventHandler<LoadFailure> OnFailedToLoad;
 		public event EventHandler<ShowResult> OnSkip;
 		public event EventHandler<ShowResult> OnOpened;
 		public event EventHandler<ShowResult> OnClosed;
@@ -23,6 +25,8 @@ namespace Adiscope.Internal.Platform.Android
 		public event EventHandler<ShowFailure> OnFailedToShow;
 
 		public event EventHandler<UnitStatus> OnGetUnitStatusBackground;
+        public event EventHandler<LoadResult> OnLoadedBackground;
+        public event EventHandler<LoadFailure> OnFailedToLoadBackground;
 		public event EventHandler<ShowResult> OnSkipBackground;
 		public event EventHandler<ShowResult> OnOpenedBackground;
 		public event EventHandler<ShowResult> OnClosedBackground;
@@ -73,6 +77,18 @@ namespace Adiscope.Internal.Platform.Android
             }
         }
 
+        public void LoadRewardedInterstitial(string unitId)
+        {
+            if (rewardedInterstitialAd == null)
+            {
+                Debug.LogError("Android.RewardedInterstitialAdClient<Load> RewardedInterstitialAd: null");
+                return;
+            }
+
+            this.rewardedInterstitialAd.Call(Values.MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER, this);
+            rewardedInterstitialAd.Call(Values.MTD_LOAD, unitId);
+        }
+
         public void PreLoadAllRewardedInterstitial()
         {
             if (rewardedInterstitialAd == null)
@@ -81,6 +97,7 @@ namespace Adiscope.Internal.Platform.Android
                 return;
             }
 
+            this.rewardedInterstitialAd.Call(Values.MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER, this);
             rewardedInterstitialAd.Call(Values.MTD_REWARDED_INTERSTITIAL_LOAD_ALL);
         }
 
@@ -92,7 +109,20 @@ namespace Adiscope.Internal.Platform.Android
                 return;
             }
 
+            this.rewardedInterstitialAd.Call(Values.MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER, this);
             rewardedInterstitialAd.Call(Values.MTD_REWARDED_INTERSTITIAL_LOAD, unitIds);
+        }
+
+        public bool IsLoadedRewardedInterstitial(string unitId)
+        {
+            if (rewardedInterstitialAd == null)
+            {
+                Debug.LogError("Android.RewardedInterstitialAdClient<IsLoaded> RewardedInterstitialAd: null");
+                return false;
+            }
+
+            this.rewardedInterstitialAd.Call(Values.MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER, this);
+            return rewardedInterstitialAd.Call<bool>(Values.MTD_IS_LOADED, unitId);
         }
 
         public bool ShowRewardedInterstitial(string unitId)
@@ -103,7 +133,21 @@ namespace Adiscope.Internal.Platform.Android
                 return false;
             }
 
+            this.rewardedInterstitialAd.Call(Values.MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER, this);
             rewardedInterstitialAd.Call(Values.MTD_SHOW, unitId);
+            return true;
+        }
+
+        public bool ShowWithPopupRewardedInterstitial(string unitId)
+        {
+            if (rewardedInterstitialAd == null)
+            {
+                Debug.LogError("Android.RewardedInterstitialAdClient<ShowWithPopup> RewardedInterstitialAd: null");
+                return false;
+            }
+
+            this.rewardedInterstitialAd.Call(Values.MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER, this);
+            rewardedInterstitialAd.Call(Values.MTD_REWARDED_INTERSTITIAL_SHOW_WITH_POPUP, unitId);
             return true;
         }
 
@@ -148,6 +192,40 @@ namespace Adiscope.Internal.Platform.Android
             if (this.OnGetUnitStatusBackground != null)
             {
                 this.OnGetUnitStatusBackground(this, new UnitStatus(isLive, isActive));
+            }
+        }
+
+        [System.Reflection.Obfuscation(Exclude = true, Feature = "renaming")]
+        public void onRewardedInterstitialAdLoaded(string unitId)
+        {
+            if (this.OnLoaded != null)
+            {
+                UnityThread.executeInMainThread(() =>
+                {
+                    this.OnLoaded(this, new LoadResult(unitId));
+                });
+            }
+
+            if (this.OnLoadedBackground != null)
+            {
+                this.OnLoadedBackground(this, new LoadResult(unitId));
+            }
+        }
+
+        [System.Reflection.Obfuscation(Exclude = true, Feature = "renaming")]
+        public void onRewardedInterstitialAdFailedToLoad(string unitId, AndroidJavaObject error)
+        {
+            if (this.OnFailedToLoad != null)
+            {
+                UnityThread.executeInMainThread(() =>
+                {
+                    this.OnFailedToLoad(this, new LoadFailure(unitId, Utils.ConvertToAdiscopeError(error)));
+                });
+            }
+
+            if (this.OnFailedToLoadBackground != null)
+            {
+                this.OnFailedToLoadBackground(this, new LoadFailure(unitId, Utils.ConvertToAdiscopeError(error)));
             }
         }
 

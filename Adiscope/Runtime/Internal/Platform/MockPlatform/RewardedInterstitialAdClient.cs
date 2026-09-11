@@ -16,6 +16,8 @@ namespace Adiscope.Internal.Platform.MockPlatform
     internal class RewardedInterstitialAdClient : IRewardedInterstitialAdClient
     {
 		public event EventHandler<UnitStatus> OnGetUnitStatus;
+        public event EventHandler<LoadResult> OnLoaded;
+        public event EventHandler<LoadFailure> OnFailedToLoad;
 		public event EventHandler<ShowResult> OnSkip;
 		public event EventHandler<ShowResult> OnOpened;
 		public event EventHandler<ShowResult> OnClosed;
@@ -23,6 +25,8 @@ namespace Adiscope.Internal.Platform.MockPlatform
 		public event EventHandler<ShowFailure> OnFailedToShow;
 
 		public event EventHandler<UnitStatus> OnGetUnitStatusBackground;
+        public event EventHandler<LoadResult> OnLoadedBackground;
+        public event EventHandler<LoadFailure> OnFailedToLoadBackground;
 		public event EventHandler<ShowResult> OnSkipBackground;
 		public event EventHandler<ShowResult> OnOpenedBackground;
 		public event EventHandler<ShowResult> OnClosedBackground;
@@ -38,6 +42,15 @@ namespace Adiscope.Internal.Platform.MockPlatform
         }
 
         #region AD APIs 
+
+        public void LoadRewardedInterstitial(string unitId)
+        {
+// #if UNITY_EDITOR
+//             new Thread(() => DelayedCallback(onRewardedInterstitialAdLoaded, 1000)).Start();
+// #else
+//             new Thread(() => DelayedCallback(onRewardedInterstitialAdFailedToLoad, 5)).Start();
+// #endif
+        }
 
         public void PreLoadAllRewardedInterstitial()
         {
@@ -58,6 +71,11 @@ namespace Adiscope.Internal.Platform.MockPlatform
 // #endif
         }
 
+        public bool IsLoadedRewardedInterstitial(string unitId)
+        {
+            return true;
+        }
+
         public bool ShowRewardedInterstitial(string unitId)
         {
 //             this.unitId = unitId;
@@ -67,6 +85,11 @@ namespace Adiscope.Internal.Platform.MockPlatform
 // #else
 //             new Thread(() => DelayedCallback(onRewardedInterstitialAdFailedToLoad, 5)).Start();
 // #endif
+            return true;
+        }
+
+        public bool ShowWithPopupRewardedInterstitial(string unitId)
+        {
             return true;
         }
 
@@ -107,7 +130,41 @@ namespace Adiscope.Internal.Platform.MockPlatform
             }
         }
 
+        public void onRewardedInterstitialAdLoaded()
+        {
+            if (this.OnLoaded != null)
+            {
+                UnityThread.executeInMainThread(() =>
+                {
+                    this.OnLoaded(this, new LoadResult(this.unitId));
+                });
+            }
+
+            if (this.OnLoadedBackground != null)
+            {
+                this.OnLoadedBackground(this, new LoadResult(this.unitId));
+            }
+        }
+
         public void onRewardedInterstitialAdFailedToLoad()
+        {
+            AdiscopeError error = new AdiscopeError(-1, "Adiscope only supports following platforms: Android");
+
+            if (this.OnFailedToLoad != null)
+            {
+                UnityThread.executeInMainThread(() =>
+                {
+                    this.OnFailedToLoad(this, new LoadFailure(this.unitId, error));
+                });
+            }
+
+            if (this.OnFailedToLoadBackground != null)
+            {
+                this.OnFailedToLoadBackground(this, new LoadFailure(this.unitId, error));
+            }
+        }
+
+        public void onRewardedInterstitialAdSkipped()
         {
             AdiscopeError error = new AdiscopeError(-1, "Adiscope only supports following platforms: Android");
 

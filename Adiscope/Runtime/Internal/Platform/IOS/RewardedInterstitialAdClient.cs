@@ -20,6 +20,8 @@ namespace Adiscope.Internal.Platform.IOS
 	internal class RewardedInterstitialAdClient : IRewardedInterstitialAdClient
 	{
 		public event EventHandler<UnitStatus> OnGetUnitStatus;
+        public event EventHandler<LoadResult> OnLoaded;
+        public event EventHandler<LoadFailure> OnFailedToLoad;
 		public event EventHandler<ShowResult> OnSkip;
 		public event EventHandler<ShowResult> OnOpened;
 		public event EventHandler<ShowResult> OnClosed;
@@ -27,6 +29,8 @@ namespace Adiscope.Internal.Platform.IOS
 		public event EventHandler<ShowFailure> OnFailedToShow;
 
 		public event EventHandler<UnitStatus> OnGetUnitStatusBackground;
+        public event EventHandler<LoadResult> OnLoadedBackground;
+        public event EventHandler<LoadFailure> OnFailedToLoadBackground;
 		public event EventHandler<ShowResult> OnSkipBackground;
 		public event EventHandler<ShowResult> OnOpenedBackground;
 		public event EventHandler<ShowResult> OnClosedBackground;
@@ -51,12 +55,30 @@ namespace Adiscope.Internal.Platform.IOS
 		}
 
 		[DllImport ("__Internal")]
-		private static extern void preLoadRewardedInterstitial(string[] unitIds);
+		private static extern void preLoadRewardedInterstitial(string[] unitIds, onRewardedInterstitialAdLoadedCallback loadCallback, onRewardedInterstitialAdFailedToLoadCallback failedToLoadCallback);
 
 		public void PreLoadRewardedInterstitial(string[] unitIds)
 		{
 			Debug.Log("PreLoadRewardedInterstitial : " + unitIds);
-			preLoadRewardedInterstitial(unitIds);
+			preLoadRewardedInterstitial(unitIds, onRewardedInterstitialAdLoaded, onRewardedInterstitialAdFailedToLoad);
+		}
+
+		[DllImport ("__Internal")]
+		private static extern void loadRewardedInterstitial(string unitId, onRewardedInterstitialAdLoadedCallback loadCallback, onRewardedInterstitialAdFailedToLoadCallback failedToLoadCallback);
+
+		public void LoadRewardedInterstitial(string unitId)
+		{
+			Debug.Log("LoadRewardedInterstitial : " + unitId);
+			loadRewardedInterstitial(unitId, onRewardedInterstitialAdLoaded, onRewardedInterstitialAdFailedToLoad);
+		}
+
+		[DllImport ("__Internal")]
+		private static extern bool isLoadedRewardedInterstitial(string unitId);
+
+		public bool IsLoadedRewardedInterstitial(string unitId)
+		{
+			Debug.Log("LoadRewardedInterstitial");
+			return isLoadedRewardedInterstitial(unitId);
 		}
 
 		[DllImport ("__Internal")]
@@ -67,6 +89,15 @@ namespace Adiscope.Internal.Platform.IOS
 		{
 			Debug.Log("ShowRewardedInterstitial : " + unitId);
 			return showRewardedInterstitial(unitId, onRewardedInterstitialAdOpened, onRewardedInterstitialAdClosed, onRewardedInterstitialRewarded, onRewardedInterstitialAdFailedToShow, onRewardedInterstitialAdSkip);
+		}
+
+		[DllImport ("__Internal")]
+		private static extern bool showRewardedInterstitialWithPop(string unitId, onRewardedInterstitialAdOpenedCallback openedCallback, onRewardedInterstitialAdClosedCallback closedCallback, 
+			onRewardedInterstitialRewardedCallback rewardedCallback, onRewardedInterstitialAdFailedToShowCallback failedToShowCallback, onRewardedInterstitialAdSkipCallback skipCallback);
+
+		public bool ShowWithPopupRewardedInterstitial(string unitId) {
+			Debug.Log("ShowWithPopupRewardedInterstitial : " + unitId);
+			return showRewardedInterstitialWithPop(unitId, onRewardedInterstitialAdOpened, onRewardedInterstitialAdClosed, onRewardedInterstitialRewarded, onRewardedInterstitialAdFailedToShow, onRewardedInterstitialAdSkip);
 		}
 
 		[DllImport ("__Internal")]
@@ -106,6 +137,64 @@ namespace Adiscope.Internal.Platform.IOS
 			if (this.OnGetUnitStatusBackground != null)
 			{
 				this.OnGetUnitStatusBackground (this, new UnitStatus(live, active));
+			}
+		}
+
+		private delegate void onRewardedInterstitialAdLoadedCallback(string unitId);
+
+		[MonoPInvokeCallback(typeof(onRewardedInterstitialAdLoadedCallback))] 
+		public static void onRewardedInterstitialAdLoaded(string unitId)
+		{
+            if (Instance != null)
+            {
+				Instance.RewardedInterstitialAdLoadedProc(unitId);
+			}
+		}
+
+		private void RewardedInterstitialAdLoadedProc(string unitId)
+		{
+			if (this.OnLoaded != null)
+			{
+				UnityThread.executeInMainThread(() =>
+				{
+					this.OnLoaded(
+						this, new LoadResult(unitId));
+				});
+			}
+
+			if (this.OnLoadedBackground != null)
+			{
+				this.OnLoadedBackground(
+					Instance, new LoadResult(unitId));
+			}
+		}
+
+		private delegate void onRewardedInterstitialAdFailedToLoadCallback(string unitId, int code, string description, string xb3TraceID);
+
+		[MonoPInvokeCallback(typeof(onRewardedInterstitialAdFailedToLoadCallback))]
+		public static void onRewardedInterstitialAdFailedToLoad(string unitId, int code, string description, string xb3TraceID)
+		{
+            if (Instance != null)
+            {
+				Instance.RewardedInterstitialAdFailedToLoadProc (unitId, code, description, xb3TraceID);
+			}
+		}
+
+		private void RewardedInterstitialAdFailedToLoadProc(string unitId, int code, string description, string xb3TraceID)
+		{
+			if (Instance.OnFailedToLoad != null)
+			{
+				UnityThread.executeInMainThread(() =>
+				{
+					Instance.OnFailedToLoad(
+						Instance, new LoadFailure(unitId, new AdiscopeError(code, description, xb3TraceID)));
+				});
+			}
+
+			if (Instance.OnFailedToLoadBackground != null)
+			{
+				Instance.OnFailedToLoadBackground (
+					Instance, new LoadFailure(unitId, new AdiscopeError (code, description, xb3TraceID)));
 			}
 		}
 

@@ -108,7 +108,7 @@ namespace Adiscope.Internal.Platform.IOS
         public void SetUserId(string user_id) 
         {
             if (!setUserId(user_id))
-                throw new System.ArgumentException();
+                Debug.Log ("Invalid user id: " + user_id);
         }
 
 		[DllImport ("__Internal")]
@@ -117,7 +117,7 @@ namespace Adiscope.Internal.Platform.IOS
         public void SetUserIdChild(string userId, int child)
         {
             if (!setUserIdChild(userId, child))
-                throw new System.ArgumentException();
+                Debug.Log ("Invalid user id: " + userId + " (child: " + child + ")");
         }
 
     	[DllImport("__Internal")] 

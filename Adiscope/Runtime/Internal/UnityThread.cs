@@ -80,6 +80,13 @@ namespace Adiscope.Internal
 #endif
 
         /// <summary>
+        /// whether the executer that drains the action queues is alive.
+        /// when it is not, queued actions are never executed, so callers that must not
+        /// lose their action have to handle it themselves.
+        /// </summary>
+        internal static bool IsExecuterAlive { get { return instance != null; } }
+
+        /// <summary>
         /// used to initialize UnityThread. this must be executed in unity main thread.
         /// </summary>
         /// <param name="visible">UnityThread's game object visible in game scene/hierachy</param>
@@ -170,7 +177,16 @@ namespace Adiscope.Internal
             // Loop and execute the functions from the actionCopiedQueueUpdateFunc
             for (int i = 0; i < actionCopiedQueueUpdateFunc.Count; i++)
             {
-                actionCopiedQueueUpdateFunc[i].Invoke();
+                // an exception from one action must not drop the remaining ones.
+                // the queue was already cleared above, so they would be lost for good.
+                try
+                {
+                    actionCopiedQueueUpdateFunc[i].Invoke();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
             }
         }
 #endif

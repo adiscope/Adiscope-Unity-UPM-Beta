@@ -15,7 +15,6 @@ namespace Adiscope.Internal.Platform.Android
         public const string PKG_REWARDED_INTERSTITIAL_AD_LISTENER = "com.nps.adiscope.rewardedinterstitial.RewardedInterstitialAdShowListener";
         public const string PKG_OFFERWALL_AD_LISTENER = "com.nps.adiscope.offerwall.OfferwallAdListener";
         public const string PKG_INTERSTITIAL_AD_LISTENER = "com.nps.adiscope.interstitial.InterstitialAdListener";
-        public const string PKG_AD_EVENT_LISTENER = "com.nps.adiscope.adevent.AdEventListener";
 
         public const string PKG_ADMOB_ADAPTER = "com.nps.adiscope.adapter.admob.AdMobAdapter";
         public const string PKG_MAX_ADAPTER = "com.nps.adiscope.adapter.max.MaxAdapter";
@@ -63,10 +62,7 @@ namespace Adiscope.Internal.Platform.Android
         public const string MTD_SET_REWARDED_INTERSTITIAL_AD_LISTENER = "setRewardedInterstitialAdListener";
         public const string MTD_REWARDED_INTERSTITIAL_LOAD = "preloadUnit";
         public const string MTD_REWARDED_INTERSTITIAL_LOAD_ALL = "preloadAll";
-
-        // Ad Event
-        public const string MTD_GET_AD_EVENT_INSTANCE = "getAdEventInstance";
-        public const string MTD_SET_AD_EVENT_LISTENER = "setAdEventListener";
+        public const string MTD_REWARDED_INTERSTITIAL_SHOW_WITH_POPUP = "showWithPopup";
 
         public const string MTD_SHOW_DEBUG = "showDebug";
 

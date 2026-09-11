@@ -8,27 +8,27 @@ namespace Adiscope.Model
     /// <summary>
     /// success information for showing ad
     /// </summary>
-    public class InitResult : EventArgs
+    public class LoadResult : EventArgs
     {
         /// <summary>
-        /// Result of Initialize Result
+        /// unit id of ad shown
         /// </summary>
-        public bool IsSuccess { get; private set; }
+        public string UnitId { get; private set; }
 
         /// <summary>
         /// constructor for show success result
         /// </summary>
         /// <param name="unitId">unit id of ad shown</param>
-        public InitResult(bool isSuccess)
+        public LoadResult(string unitId)
         {
-            this.IsSuccess = isSuccess;
+            this.UnitId = unitId;
         }
 
         public override string ToString()
         {
             return
-                "InitResult{" +
-                "IsSuccess=\"" + this.IsSuccess + "\"" +
+                "LoadResult{" +
+                "UnitId=\"" + this.UnitId + "\"" +
                 "}";
         }
     }

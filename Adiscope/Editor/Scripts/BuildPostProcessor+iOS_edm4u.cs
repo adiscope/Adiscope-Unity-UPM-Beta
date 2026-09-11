@@ -176,17 +176,26 @@ namespace Adiscope
         private const string PANGLE_FILE_NAME       = "PangleIosDependencies.xml";
         private const string TNKPUB_FILE_NAME       = "TnkpubIosDependencies.xml";
 
-        private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Sample/releases/download/";
-        private const string ADISCOPE_FILE_PATH2     = "https://github.com/adiscope/Adiscope-iOS-Developer/releases/download/";
-        private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH2 + "2.1.28/";
-        private const string LUCKYEVENT_FILE_PATH   = ADISCOPE_FILE_PATH2 + "2.1.28/";
-        private const string ADMANAGER_FILE_PATH    = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH2 + "2.1.28/";
-        private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
-        private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
+//        private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Sample/releases/download/";
+//        private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string LUCKYEVENT_FILE_PATH   = ADISCOPE_FILE_PATH + "5.3.3/";
+//        private const string ADMANAGER_FILE_PATH    = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.4.0/";
+//        private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
+         private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Developer/releases/download/";
+         private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH + "2.1.32/";
+         private const string LUCKYEVENT_FILE_PATH   = ADISCOPE_FILE_PATH + "2.1.30/";
+         private const string ADMANAGER_FILE_PATH    = ADISCOPE_FILE_PATH + "2.1.30/";
+         private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "2.1.30/";
+         private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "2.1.30/";
+         private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "2.1.30/";
+         private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "2.1.32/";
+         private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "2.1.32/";
+         private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "2.1.30/";
 
         public static string GetFileName(this AdiscopeFrameworkType type) {
             switch (type) {

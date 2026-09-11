@@ -49,7 +49,7 @@ namespace Adiscope.PostProcessor
                 return;
             }
 
-            string content = File.ReadAllText(templatePath);
+            string content = File.ReadAllText(templatePath).Replace("\r\n", "\n");
             bool modified = false;
 
             // AppLovin Ad Review 추가 또는 제거
@@ -140,7 +140,7 @@ applovin {{
                 return;
             }
 
-            string content = File.ReadAllText(templatePath);
+            string content = File.ReadAllText(templatePath).Replace("\r\n", "\n");
             bool modified = false;
 
             if (applovinAdReview && buildAppBundle && !emptyKey)
@@ -186,7 +186,7 @@ applovin {{
                 return;
             }
 
-            string content = File.ReadAllText(templatePath);
+            string content = File.ReadAllText(templatePath).Replace("\r\n", "\n");
             bool modified = false;
 
             if (applovinAdReview && buildAppBundle && !emptyKey)

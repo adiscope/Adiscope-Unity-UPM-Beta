@@ -11,12 +11,16 @@ public class AdiscopeExample : MonoBehaviour
 
     private string MEDIA_ID;
     private string USER_ID;
+    private string CHILD_TYPE;
     private string REWARDED_CHECK_PARAM;
     private string RED_COLOR;
     private string GREEN_COLOR;
     private string BLUE_COLOR;
     private string ALPHA_COLOR;
     private string MESSAGE_ALERT;
+    private string LUCKY_APP_ID;
+    private string LUCKY_PUB_ID;
+    private string LUCKY_EVENT_DEEPLINK_URL;
     private string RV_ID;
     private string IT_ID;
     private string RI_ID;
@@ -25,7 +29,6 @@ public class AdiscopeExample : MonoBehaviour
     private string RI_ID3;
     private string RI_ID4;
     private string RI_ID5;
-    private string ROULETTE_ID;
     private string OFFERWALL_ID;
     private string OFFERWALL_DETAIL_ID;
     private string OFFERWALL_DETAIL_URL;
@@ -43,6 +46,9 @@ public class AdiscopeExample : MonoBehaviour
 #if UNITY_IOS
             MEDIA_ID = "";
             USER_ID = "";
+            REWARDED_CHECK_PARAM = "";
+            LUCKY_APP_ID = "";
+            LUCKY_PUB_ID = "";
             RV_ID = "";
             IT_ID = "";
             RI_ID = "";
@@ -51,9 +57,8 @@ public class AdiscopeExample : MonoBehaviour
             RI_ID3 = "";
             RI_ID4 = "";
             RI_ID5 = "";
-            OFFERWALL_ID = "";
-            REWARDED_CHECK_PARAM = "";
             ROULETTE_ID = "";
+            OFFERWALL_ID = "";
             Find_UNIT_ID = "";
             CALLBACK_TAG = "";
             CHILD_YN = "";
@@ -62,9 +67,12 @@ public class AdiscopeExample : MonoBehaviour
 #if UNITY_ANDROID
             MEDIA_ID = "";
             USER_ID = "";
+            REWARDED_CHECK_PARAM = "";
+            LUCKY_APP_ID = "";
+            LUCKY_PUB_ID = "";
+            LUCKY_EVENT_DEEPLINK_URL = "";
             RV_ID = "";
             IT_ID = "";
-            REWARDED_CHECK_PARAM = "";
             RI_ID = "";
             RI_ID1 = "";
             RI_ID2 = "";
@@ -88,7 +96,6 @@ public class AdiscopeExample : MonoBehaviour
     private Adiscope.Feature.RewardedVideoAd rewardedVideoAd;
     private Adiscope.Feature.InterstitialAd interstitialAd;
     private Adiscope.Feature.RewardedInterstitialAd rewaredInterstitialAd;
-    private Adiscope.Feature.AdEvent adEvent;
 
     // Properties
     private string outputMessage;
@@ -97,12 +104,18 @@ public class AdiscopeExample : MonoBehaviour
 
     // Mapper
     class AdiscopeItemFetcher {
+        private static Dictionary<string, string> offerwallUnitID = new Dictionary<string, string>() {
+            { "", "" },
+            { "", "" }
+        };
+
         private static Dictionary<string, string> secretKeys = new Dictionary<string, string>() {
             { "", "" },
             { "", "" }
         };
 
         public static string FetchMediaScretKey(string mediaID) { return secretKeys[mediaID]; }
+        public static string FetchOfferwallUnitID(string mediaID) { return offerwallUnitID[mediaID]; }
     }
 
     public Vector2 scrollPosition = Vector2.zero;
@@ -138,9 +151,6 @@ public class AdiscopeExample : MonoBehaviour
         this.rewaredInterstitialAd.OnFailedToShow -= OnRewardedInterstitialAdFailedToShowCallback;
         this.rewaredInterstitialAd.OnRewarded -= OnRewardedInterstitialRewardedCallback;
 
-        this.adEvent.OnOpened -= OnAdEventOpenedCallback;
-        this.adEvent.OnClosed -= OnAdEventClosedCallback;
-        this.adEvent.OnFailedToShow -= OnAdEventFailedToShowCallback;
     }
 
     private void RegisterAdiscopeCallback()
@@ -208,14 +218,6 @@ public class AdiscopeExample : MonoBehaviour
             this.rewaredInterstitialAd.OnRewarded += OnRewardedInterstitialRewardedCallback;
 
         }
-
-        if(this.adEvent == null)
-        {
-            this.adEvent = Adiscope.Sdk.GetAdEventInstance();
-            this.adEvent.OnOpened += OnAdEventOpenedCallback;
-            this.adEvent.OnClosed += OnAdEventClosedCallback;
-            this.adEvent.OnFailedToShow += OnAdEventFailedToShowCallback;
-        }
     }
 
     private void OnInitializedCallback(object sender, Adiscope.Model.InitResult args) { this.AddOutputMessage("initialize - args: " + args); }
@@ -255,25 +257,13 @@ public class AdiscopeExample : MonoBehaviour
     private void OnRewardedInterstitialAdFailedToShowCallback(object sender, Adiscope.Model.ShowFailure args) { this.AddOutputMessage("  <= rewaredInterstitialAd.OnFailedToShow - args: " + args); }
     private void OnRewardedInterstitialRewardedCallback(object sender, Adiscope.Model.RewardItem args) { this.AddOutputMessage("  <= rewaredInterstitialAd.OnRewarded - args: " + args); }
 
-    private void OnAdEventOpenedCallback(object sender, Adiscope.Model.ShowResult args)
-    {
-        this.AddOutputMessage("  <= adEvent.OnOpened - args: " + args);
-    }
-    private void OnAdEventClosedCallback(object sender, Adiscope.Model.ShowResult args)
-    { 
-        this.AddOutputMessage("  <= adEvent.OnClosed - args: " + args); 
-    }
-    private void OnAdEventFailedToShowCallback(object sender, Adiscope.Model.ShowFailure args)
-    {
-        this.AddOutputMessage("  <= adEvent.OnFailedToShow - args: " + args);
-    }
-
-
     #region GUI
     private void AddContentViews()
     {
 
         GUI.backgroundColor = Color.black;
+
+        //this.RegisterAdiscopeCallback();
 
         // Core
         this.AddLabel("Core");
@@ -282,6 +272,12 @@ public class AdiscopeExample : MonoBehaviour
         this.AddButton("Set User ID", () => {
             this.core.SetUserId(USER_ID);
             this.AddOutputMessage("Set User ID: " + USER_ID);
+        });
+        this.AddLabel("0:None, 1:Adult, 2:Child");
+        this.AddTextField("Child Type", TextFieldType.ChildType);
+        this.AddButton("Set User ID & Child Type", () => {
+            this.core.SetUserIdChild(USER_ID, int.Parse(CHILD_TYPE));
+            this.AddOutputMessage("Set User ID: " + USER_ID + ", Child Type: " + CHILD_TYPE);
         });
 
         this.AddTextField("Callback Tag", TextFieldType.CallbackTag);
@@ -559,6 +555,31 @@ public class AdiscopeExample : MonoBehaviour
             Application.OpenURL(url);
         });
 
+        // Lucky Event
+        this.AddSpacer();
+        this.AddLabel("Lucky Event");
+        this.AddTextField("App ID", TextFieldType.LuckyAppId);
+        this.AddTextField("Pub ID ", TextFieldType.LuckyPubId);
+        this.AddButton("Set Lucky Event", () => {
+            this.core.SetLuckyEventAppId(LUCKY_APP_ID, LUCKY_PUB_ID);
+        });
+        this.AddButton("Show Lucky Event", () => {
+            this.core.ShowLuckyEvent();
+        });
+
+#if UNITY_ANDROID
+        this.AddTextField("LuckyEvent Deeplink URL", TextFieldType.LuckyEventDeeplinkUrl);
+        this.AddButton("Show Detail from Deeplink", () => {
+            string url = LUCKY_EVENT_DEEPLINK_URL;
+            if (url == null)
+            {
+                this.AddOutputMessage("Empty URL");
+                return;
+            }
+            Application.OpenURL(url);
+        });
+#endif
+
         // Rewarded Video
         this.AddSpacer();
         this.AddLabel("Rewared Video");
@@ -653,21 +674,6 @@ public class AdiscopeExample : MonoBehaviour
             this.AddOutputMessage("ShowWithLoad IndicatorView Style");
         });
 #endif
-
-        // AdEvent
-        this.AddSpacer();
-        this.AddLabel("AdEvent");
-        this.AddTextField("Roulette", TextFieldType.RouletteUnit);
-        this.AddButton("AdEvent - Show", () => {
-            string unitID = ROULETTE_ID.ToUpper();
-            if (unitID == null)
-            {
-                this.AddOutputMessage("Not Found unitID: " + MEDIA_ID);
-                return;
-            }
-
-            if (this.adEvent.Show(unitID)) { } else { this.AddOutputMessage("adEvent.Show request is duplicated"); }
-        });
     }
 
     private void OnGUI()
@@ -762,12 +768,16 @@ public class AdiscopeExample : MonoBehaviour
                 {
                     case TextFieldType.MediaID: MEDIA_ID = GUI.TextField(rect, MEDIA_ID, style); break;
                     case TextFieldType.UserID: USER_ID = GUI.TextField(rect, USER_ID, style); break;
+                    case TextFieldType.ChildType: CHILD_TYPE = GUI.TextField(rect, CHILD_TYPE, style); break;
                     case TextFieldType.CustomData: REWARDED_CHECK_PARAM = GUI.TextField(rect, REWARDED_CHECK_PARAM, style); break;
                     case TextFieldType.OfferwallUnit: OFFERWALL_ID = GUI.TextField(rect, OFFERWALL_ID, style); break;
                     case TextFieldType.OfferwallDetailId: OFFERWALL_DETAIL_ID = GUI.TextField(rect, OFFERWALL_DETAIL_ID, style); break;
                     case TextFieldType.OfferwallDetailUrl: OFFERWALL_DETAIL_URL = GUI.TextField(rect, OFFERWALL_DETAIL_URL, style); break;
                     case TextFieldType.OfferwallDeeplinkUrl: OFFERWALL_DEEPLINK_URL = GUI.TextField(rect, OFFERWALL_DEEPLINK_URL, style); break;
                     case TextFieldType.FindUnitID: Find_UNIT_ID = GUI.TextField(rect, Find_UNIT_ID, style); break;
+                    case TextFieldType.LuckyAppId: LUCKY_APP_ID = GUI.TextField(rect, LUCKY_APP_ID, style); break;
+                    case TextFieldType.LuckyPubId: LUCKY_PUB_ID = GUI.TextField(rect, LUCKY_PUB_ID, style); break;
+                    case TextFieldType.LuckyEventDeeplinkUrl: LUCKY_EVENT_DEEPLINK_URL = GUI.TextField(rect, LUCKY_EVENT_DEEPLINK_URL, style); break;
                     case TextFieldType.RewardedUnit: RV_ID = GUI.TextField(rect, RV_ID, style).ToUpper(); break;
                     case TextFieldType.RewardedInterstitialUnit: RI_ID = GUI.TextField(rect, RI_ID, style).ToUpper(); break;
                     case TextFieldType.RewardedInterstitialUnit1: RI_ID1 = GUI.TextField(rect, RI_ID1, style).ToUpper(); break;
@@ -776,7 +786,6 @@ public class AdiscopeExample : MonoBehaviour
                     case TextFieldType.RewardedInterstitialUnit4: RI_ID4 = GUI.TextField(rect, RI_ID4, style).ToUpper(); break;
                     case TextFieldType.RewardedInterstitialUnit5: RI_ID5 = GUI.TextField(rect, RI_ID5, style).ToUpper(); break;
                     case TextFieldType.InterstitialUnit: IT_ID = GUI.TextField(rect, IT_ID, style).ToUpper(); break;
-                    case TextFieldType.RouletteUnit: ROULETTE_ID = GUI.TextField(rect, ROULETTE_ID, style).ToUpper(); break;
                     case TextFieldType.CallbackTag: CALLBACK_TAG = GUI.TextField(rect, CALLBACK_TAG, style).ToUpper(); break;
                     case TextFieldType.ChildYN: CHILD_YN = GUI.TextField(rect, CHILD_YN, style).ToUpper(); break;
                     case TextFieldType.Red: RED_COLOR = GUI.TextField(rect, RED_COLOR, style); break;
@@ -839,10 +848,11 @@ public class AdiscopeExample : MonoBehaviour
 public enum ContentViewType { Button, TextField, Label, Spacer }
 public enum TextFieldType
 {
-    MediaID, UserID, FindUnitID, RewardedUnit, InterstitialUnit, OfferwallUnit, OfferwallDetailId,
+    MediaID, UserID, ChildType, FindUnitID, RewardedUnit, InterstitialUnit, OfferwallUnit, OfferwallDetailId,
     OfferwallDetailUrl, OfferwallDeeplinkUrl, OfferwallApplinkUrl, CallbackTag, ChildYN, RewardedInterstitialUnit,
     RewardedInterstitialUnit1, RewardedInterstitialUnit2, RewardedInterstitialUnit3, RewardedInterstitialUnit4,
-    RewardedInterstitialUnit5, RouletteUnit, CustomData, Red, Green, Blue, Alpha, Message
+    RewardedInterstitialUnit5, CustomData, Red, Green, Blue, Alpha, Message, 
+    LuckyAppId, LuckyPubId, LuckyEventDeeplinkUrl
 }
 
 class ContentView

@@ -14,6 +14,7 @@ namespace Adiscope
         public const string SERVICE_JSON_KEY_ADMOB         = "com.google.android.gms.ads.APPLICATION_ID";
         public const string SERVICE_JSON_KEY_APPLOVIN      = "applovin.sdk.key";
         public const string SERVICE_JSON_KEY_AD_REVIEW     = "applovin.ad.review.key";
+        public const string SERVICE_JSON_KEY_AD_REVIEW_ENABLE = "applovin.ad.review.enabled";
 
         private const string SERVICE_JSON_KEY_ADISCOPE      = "adiscope";
         private const string SERVICE_JSON_KEY_NETWORK       = "network";
@@ -21,6 +22,7 @@ namespace Adiscope
         private const string SERVICE_JSON_KEY_SETTINGS      = "settings";
         private const string SERVICE_JSON_KEY_REWARDEDVIDEO = "rewardedVideoAd";
         private const string SERVICE_JSON_KEY_INTERSTITIAL  = "interstitialAd";
+        private const string SERVICE_JSON_KEY_REWARDED_INTERSTITIAL  = "rewardedInterstitialAd";
 
         private const string PATH_ADISCOPE_EDITOR           = "/Adiscope/Editor";
         private static string SettingsPath                  = "Assets/Adiscope/Editor/Adiscope.asset";
@@ -44,6 +46,7 @@ namespace Adiscope
 
             if (isAndroidPath) {
                 SettingsJson(androidJsonFilePath, true);
+                UpdateLauncherGradleManifestPlaceholders();
             }
 
             if (isiOSPath) {
@@ -178,10 +181,7 @@ namespace Adiscope
                     EditorGUILayout.Space();
                     if (GUILayout.Button("Create Adiscope Android & iOS Files", GUILayout.Height(30)))
                     {
-                        string mediaId     = serialized.FindProperty("_mediaID_aos").stringValue;
-                        string mediaSecret = serialized.FindProperty("_mediaSecret_aos").stringValue;
-                        string subDomain   = serialized.FindProperty("_subDomain").stringValue;
-                        UpdateLauncherGradleManifestPlaceholders(mediaId, mediaSecret, subDomain);
+                        UpdateLauncherGradleManifestPlaceholders();
 
                         if (BuildPostProcessorForAndroid.CreateAdiscopeAndroidFiles(true)       // Manifest 파일 생성
                             && BuildPostProcessorForIosEdm4u.CreateAdiscopeIosFiles(true)) {
@@ -261,8 +261,9 @@ namespace Adiscope
                         Dictionary<string, object> networkInfoSettings = networkInfo[SERVICE_JSON_KEY_SETTINGS] as Dictionary<string, object>;
                         bool rewardedVideoAdEnabled = Boolean.Parse(networkInfoAds[SERVICE_JSON_KEY_REWARDEDVIDEO].ToString());
                         bool interstitialAdEnabled = Boolean.Parse(networkInfoAds[SERVICE_JSON_KEY_INTERSTITIAL].ToString());
+                        bool rewardedInterstitialAdEnabled = Boolean.Parse(networkInfoAds[SERVICE_JSON_KEY_REWARDED_INTERSTITIAL].ToString());
                         int adapter = serialized.FindProperty("_" + adNetworkName + "Adapter").intValue;
-                        if (rewardedVideoAdEnabled || interstitialAdEnabled) {
+                        if (rewardedVideoAdEnabled || interstitialAdEnabled || rewardedInterstitialAdEnabled) {
                             if (isAndroid) {
                                 if (adapter < 1) {
                                     serialized.FindProperty("_" + adNetworkName + "Adapter").intValue = 2;
@@ -343,11 +344,25 @@ namespace Adiscope
                                     }
                                 }
                             }
+                            if(networkInfoSettings.ContainsKey(SERVICE_JSON_KEY_AD_REVIEW_ENABLE) && networkInfoSettings[SERVICE_JSON_KEY_AD_REVIEW_ENABLE] != null)
+                            {
+                                bool adReviewEnabled = Boolean.Parse(networkInfoSettings[SERVICE_JSON_KEY_AD_REVIEW_ENABLE].ToString());
+                                serialized.FindProperty("_applovinAdReview").boolValue = adReviewEnabled;
+                            }
                         }
                     }
                 }
                 serialized.ApplyModifiedProperties();
             }
+        }
+
+        private static void UpdateLauncherGradleManifestPlaceholders()
+        {
+            var s = new SerializedObject(Load());
+            UpdateLauncherGradleManifestPlaceholders(
+                s.FindProperty("_mediaID_aos").stringValue,
+                s.FindProperty("_mediaSecret_aos").stringValue,
+                s.FindProperty("_subDomain").stringValue);
         }
 
         private static void UpdateLauncherGradleManifestPlaceholders(string mediaId, string mediaSecret, string subDomain)

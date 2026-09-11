@@ -78,23 +78,6 @@ namespace Adiscope.Internal.Platform
 #endif
         }
 
-         /// <summary>
-        /// build interstitial ad client based on the runtime env.
-        /// </summary>
-        /// <returns>interstitial ad client based on current runtime platform</returns>
-        public static IAdEventClient BuildAdEventClient()
-        {
-#if UNITY_EDITOR
-            return new MockPlatform.AdEventClient();
-#elif UNITY_ANDROID
-            return new Android.AdEventClient();
-#elif UNITY_IOS
-            return new IOS.AdEventClient();
-#else
-            return new MockPlatform.AdEventClient();
-#endif
-        }
-
         /// <summary>
         /// build rewarded video ad client based on the runtime env.
         /// </summary>
