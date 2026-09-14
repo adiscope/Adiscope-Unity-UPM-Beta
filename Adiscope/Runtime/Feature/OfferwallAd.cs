@@ -37,6 +37,8 @@ namespace Adiscope.Feature
 
         private OfferwallAd()
         {
+            // 초기화 전에 광고 객체만 먼저 가져와도 네이티브 콜백(load/show fail 등)이 메인 스레드로 전달되도록 보장
+            Adiscope.Internal.UnityThread.initUnityThread(true);
             this.client = ClientBuilder.BuildOfferwallAdClient();
 
             this.client.OnOpened += (sender, args) => { OnOpened?.Invoke(sender, args); };
