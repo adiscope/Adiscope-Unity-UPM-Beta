@@ -63,6 +63,33 @@ namespace Adiscope.Internal.Platform.IOS
 			return showOfferwallDetail(unitId, itemId, filters, onOfferwallAdOpened, onOfferwallAdClosed, onOfferwallAdFailedToShow);
 		}
 
+		[DllImport("__Internal")]
+		private static extern bool showOfferwallWithPlacement(string unitId, string[] filters, string placement, onOfferwallAdOpenedCallback openedCallback, onOfferwallAdClosedCallback closedCallback,
+			onOfferwallAdFailedToShowCallback failedToShowCallback);
+
+		public bool Show(string unitId, string[] filters, string placement)
+		{
+			return showOfferwallWithPlacement(unitId, filters, placement, onOfferwallAdOpened, onOfferwallAdClosed, onOfferwallAdFailedToShow);
+		}
+
+		[DllImport("__Internal")]
+		private static extern bool showOfferwallDetailWithPlacement(string unitId, string itemId, string[] filters, string placement, onOfferwallAdOpenedCallback openedCallback, onOfferwallAdClosedCallback closedCallback,
+			onOfferwallAdFailedToShowCallback failedToShowCallback);
+
+		public bool ShowOfferwallDetail(string unitId, string[] filters, string itemId, string placement)
+		{
+			return showOfferwallDetailWithPlacement(unitId, itemId, filters, placement, onOfferwallAdOpened, onOfferwallAdClosed, onOfferwallAdFailedToShow);
+		}
+
+		[DllImport("__Internal")]
+		private static extern bool showOfferwallDetailFromUrlWithPlacement(string url, string placement, onOfferwallAdOpenedCallback openedCallback, onOfferwallAdClosedCallback closedCallback,
+			onOfferwallAdFailedToShowCallback failedToShowCallback);
+
+		public bool ShowOfferwallDetailFromUrl(string url, string placement)
+		{
+			return showOfferwallDetailFromUrlWithPlacement(url, placement, onOfferwallAdOpened, onOfferwallAdClosed, onOfferwallAdFailedToShow);
+		}
+
 		#endregion
 
 		#region Callbacks

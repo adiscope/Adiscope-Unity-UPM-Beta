@@ -1,0 +1,22 @@
+<dependencies>
+  <iosPods>
+    <iosPod name="AdiscopeMediaMax-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterAdManager-beta" version="0.11.10" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterAdMob-beta" version="0.11.10" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterBidMachine-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterBigo-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterChartBoost-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterDTExchange-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterFan-beta" version="0.11.7" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterInMobi-beta" version="0.11.10" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterIronSource-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterLine-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterMobVista-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterMoloco-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterOgury-beta" version="0.11.7" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterPangle-beta" version="0.11.8" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterPubMatic-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterUnityAds-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+    <iosPod name="AdiscopeMediaMaxAdapterVungle-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+  </iosPods>
+</dependencies>

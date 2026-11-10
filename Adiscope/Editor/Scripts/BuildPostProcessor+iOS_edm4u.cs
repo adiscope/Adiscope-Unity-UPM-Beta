@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net;
 using UnityEditor;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +8,7 @@ namespace Adiscope
 {
     class BuildPostProcessorForIosEdm4u {
         private const string PATH_ADISCOPE_EDITOR_IOS   = "/Adiscope/AdiscopeAppSettingsFilesiOS/Editor";
+        private const string PATH_ADAPTER_TEMPLATES_IOS = "Packages/com.tnk.adiscope/Editor/AdapterTemplates/iOS/";
         private const string DISPLAY_PROGRESS_DIALOG_TITLE = "Adiscope Install";
 
         public static bool CreateAdiscopeIosFiles(bool isProgress) {
@@ -34,7 +34,7 @@ namespace Adiscope
         private static bool CopyAdiscopeFrameworks(List<AdiscopeFrameworkType> usingFrameworks, bool isProgress) {
             DeleteAdiscopeFrameworks(usingFrameworks); // 사용 안 하는 adapter edm4u 파일 삭제
             CreateAdiscopeFrameworksDirectory(); // edm4u 파일을 copy 할 폴더 생성
-            return FileDownloadEdm4uAdapter(usingFrameworks, isProgress); // edm4u 파일 다운로드
+            return CreateEdm4uAdapterFiles(usingFrameworks, isProgress); // 활성화된 adapter의 edm4u 파일 생성
         }
 
         private static void DeleteAdiscopeFrameworks(List<AdiscopeFrameworkType> usingFrameworks)
@@ -86,7 +86,7 @@ namespace Adiscope
             }
         }
 
-        private static bool FileDownloadEdm4uAdapter(List<AdiscopeFrameworkType> usingFrameworks, bool isProgress) {
+        private static bool CreateEdm4uAdapterFiles(List<AdiscopeFrameworkType> usingFrameworks, bool isProgress) {
             float progress = 0.3f / usingFrameworks.Count;
             float totalProgress = 0.6f + progress;
             foreach (AdiscopeFrameworkType type in usingFrameworks) {
@@ -97,7 +97,7 @@ namespace Adiscope
                 if (isProgress) {
                     if (EditorUtility.DisplayCancelableProgressBar(
                             DISPLAY_PROGRESS_DIALOG_TITLE,
-                            "Download Adapter Files",
+                            "Create Adapter Files",
                             totalProgress)) {
                         EditorUtility.ClearProgressBar();
                         return false;
@@ -106,7 +106,7 @@ namespace Adiscope
                     totalProgress += progress;
                 }
 
-                if (!DownloadAdapterFile(type.GetFilePath(), type.GetFileName())) {
+                if (!CreateAdapterFile(type.GetFileName())) {
                     EditorUtility.ClearProgressBar();
                     EditorUtility.DisplayDialog("Failed to install", "파일 생성 실패", "닫기");
                     return false;
@@ -116,20 +116,21 @@ namespace Adiscope
             return true;
         }
 
-        private static bool DownloadAdapterFile(string file_path, string file_name) {
-            string uriString = file_path;
-            uriString += file_name;
-            Debug.Log("File URL : " + uriString);
+        // 패키지에 내장된 템플릿(.txt)을 EDM4U가 인식하는 xml로 생성
+        // AssetDatabase 대신 파일 IO로 읽어 호출 시점(에셋 import 중 등)과 무관하게 동작하도록 함
+        private static bool CreateAdapterFile(string file_name) {
+            string templatePath = Path.GetFullPath(PATH_ADAPTER_TEMPLATES_IOS + Path.ChangeExtension(file_name, ".txt"));
+            Debug.Log("CreateAdapterFile : " + templatePath);
             try
             {
-                (new WebClient()).DownloadFile(
-                    new Uri(uriString),
-                    Path.Combine(Application.dataPath + PATH_ADISCOPE_EDITOR_IOS, file_name)
+                File.WriteAllText(
+                    Path.Combine(Application.dataPath + PATH_ADISCOPE_EDITOR_IOS, file_name),
+                    File.ReadAllText(templatePath)
                 );
             }
             catch (Exception exception)
             {
-                Debug.LogError("failed to download adapter file: " + exception.Message);
+                Debug.LogError("failed to create adapter file: " + exception.Message);
                 EditorUtility.ClearProgressBar();
                 return false;
             }
@@ -176,27 +177,6 @@ namespace Adiscope
         private const string PANGLE_FILE_NAME       = "PangleIosDependencies.xml";
         private const string TNKPUB_FILE_NAME       = "TnkpubIosDependencies.xml";
 
-//        private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Sample/releases/download/";
-//        private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string LUCKYEVENT_FILE_PATH   = ADISCOPE_FILE_PATH + "5.3.3/";
-//        private const string ADMANAGER_FILE_PATH    = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.4.0/";
-//        private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "5.2.0/";
-         private const string ADISCOPE_FILE_PATH     = "https://github.com/adiscope/Adiscope-iOS-Developer/releases/download/";
-         private const string CORE_FILE_PATH         = ADISCOPE_FILE_PATH + "2.1.32/";
-         private const string LUCKYEVENT_FILE_PATH   = ADISCOPE_FILE_PATH + "2.1.30/";
-         private const string ADMANAGER_FILE_PATH    = ADISCOPE_FILE_PATH + "2.1.30/";
-         private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "2.1.30/";
-         private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "2.1.30/";
-         private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "2.1.30/";
-         private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "2.1.32/";
-         private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "2.1.32/";
-         private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "2.1.30/";
-
         public static string GetFileName(this AdiscopeFrameworkType type) {
             switch (type) {
                 case AdiscopeFrameworkType.Core:            return CORE_FILE_NAME;
@@ -214,22 +194,6 @@ namespace Adiscope
                 case AdiscopeFrameworkType.Max:             return MAX_FILE_NAME;
                 case AdiscopeFrameworkType.Pangle:          return PANGLE_FILE_NAME;
                 case AdiscopeFrameworkType.Tnkpub:          return TNKPUB_FILE_NAME;
-                default:                                    return null;
-            }
-        }
-
-        public static string GetFilePath(this AdiscopeFrameworkType type) {
-            switch (type)
-            {
-                case AdiscopeFrameworkType.Core:            return CORE_FILE_PATH;
-                case AdiscopeFrameworkType.LuckyEvent:      return LUCKYEVENT_FILE_PATH;
-                case AdiscopeFrameworkType.Admanager:       return ADMANAGER_FILE_PATH;
-                case AdiscopeFrameworkType.Admob:           return ADMOB_FILE_PATH;
-                case AdiscopeFrameworkType.Vungle:          return VUNGLE_FILE_PATH;
-                case AdiscopeFrameworkType.ChartBoost:      return CHARTBOOST_FILE_PATH;
-                case AdiscopeFrameworkType.Max:             return MAX_FILE_PATH;
-                case AdiscopeFrameworkType.Pangle:          return PANGLE_FILE_PATH;
-                case AdiscopeFrameworkType.Tnkpub:          return TNKPUB_FILE_PATH;
                 default:                                    return null;
             }
         }

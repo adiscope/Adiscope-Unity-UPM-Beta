@@ -111,6 +111,19 @@ namespace Adiscope.Internal
             }
         }
 
+        /// <summary>
+        /// create executer on the main thread at app launch, before the first scene loads.
+        /// native callbacks (e.g. load/show failure before initialize) must not be lost
+        /// even if ad instances are used before Core.Initialize, without adding a main thread
+        /// requirement to ad instance getters.
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [System.Reflection.Obfuscation(Exclude = true, Feature = "renaming")]
+        private static void AutoInitialize()
+        {
+            initUnityThread(true);
+        }
+
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);

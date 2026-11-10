@@ -138,7 +138,91 @@ namespace Adiscope.Internal.Platform.Android
             }
             return offerwallAd.Call<bool>(Values.MTD_SHOW_DETAIL, activity, url);
         }
-        
+
+        // placement가 null이면 JNI 시그니처를 String으로 찾지 못하므로 기존 메서드로 호출한다
+        public bool Show(string unitId, string[] filters, string placement)
+        {
+            if (placement == null)
+            {
+                return Show(unitId, filters);
+            }
+
+            AndroidJavaObject activity = null;
+
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
+            {
+                if (unityPlayer == null)
+                {
+                    Debug.LogError("Android.OfferwallAdClient<Show> UnityPlayer: null");
+                    return false;
+                }
+                activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
+            }
+
+            if (offerwallAd == null)
+            {
+                Debug.LogError("Android.OfferwallAdClient<Show> OfferwallAd: null");
+                return false;
+            }
+            return offerwallAd.Call<bool>(Values.MTD_SHOW, activity, unitId, filters, placement);
+        }
+
+        public bool ShowOfferwallDetail(string unitId, string[] filters, string itemId, string placement)
+        {
+            if (placement == null)
+            {
+                return ShowOfferwallDetail(unitId, filters, itemId);
+            }
+
+            AndroidJavaObject activity = null;
+
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
+            {
+                if (unityPlayer == null)
+                {
+                    Debug.LogError("Android.OfferwallAdClient<ShowOfferwallDetail> UnityPlayer: null");
+                    return false;
+                }
+                activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
+            }
+
+            if (offerwallAd == null)
+            {
+                Debug.LogError("Android.OfferwallAdClient<ShowOfferwallDetail> OfferwallAd: null");
+                return false;
+            }
+
+            int itemIdInt = Int16.Parse(itemId);
+            return offerwallAd.Call<bool>(Values.MTD_SHOW_DETAIL, activity, unitId, filters, itemIdInt, placement);
+        }
+
+        public bool ShowOfferwallDetailFromUrl(string url, string placement)
+        {
+            if (placement == null)
+            {
+                return ShowOfferwallDetailFromUrl(url);
+            }
+
+            AndroidJavaObject activity = null;
+
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass(Values.PKG_UNITY_PLAYER))
+            {
+                if (unityPlayer == null)
+                {
+                    Debug.LogError("Android.OfferwallAdClient<ShowOfferwallDetailFromUrl> UnityPlayer: null");
+                    return false;
+                }
+                activity = unityPlayer.GetStatic<AndroidJavaObject>(Values.MTD_CURRENT_ACTIVITY);
+            }
+
+            if (offerwallAd == null)
+            {
+                Debug.LogError("Android.OfferwallAdClient<ShowOfferwallDetailFromUrl> OfferwallAd: null");
+                return false;
+            }
+            return offerwallAd.Call<bool>(Values.MTD_SHOW_DETAIL, activity, url, placement);
+        }
+
         #endregion
 
         #region Callbacks

@@ -1,0 +1,5 @@
+<dependencies>
+  <iosPods>
+    <iosPod name="AdiscopeMediaVungle-beta" version="0.11.6" bitcodeEnabled="false" addToAllTargets="false" />
+  </iosPods>
+</dependencies>

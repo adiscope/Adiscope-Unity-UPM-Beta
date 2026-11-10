@@ -1,0 +1,8 @@
+<dependencies>
+  <androidPackages>
+    <repositories>
+      <repository>https://repository.tnkad.net:8443/repository/public/</repository>
+    </repositories>
+    <androidPackage spec="com.nps.adiscope:adapter.tnkpub:7.25.05.1.1" />
+  </androidPackages>
+</dependencies>

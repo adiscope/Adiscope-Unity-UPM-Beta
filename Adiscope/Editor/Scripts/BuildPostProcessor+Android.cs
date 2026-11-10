@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net;
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ namespace Adiscope
         private const string PATH_ADISCOPE_EDITOR       = "/Adiscope/AdiscopeAppSettingsFiles/Editor";
         private const string PATH_ADISCOPE_LIB          = "/Adiscope/AdiscopeAppSettingsFiles/Plugins/Adiscope.androidlib";
         private const string PATH_ADISCOPE_MANIFEST     = "/Adiscope/AdiscopeAppSettingsFiles/Plugins/Adiscope.androidlib/src/main";
+        private const string PATH_ADAPTER_TEMPLATES     = "Packages/com.tnk.adiscope/Editor/AdapterTemplates/Android/";
         private const string DISPLAY_PROGRESS_DIALOG_TITLE = "Adiscope Install";
         private const string PROJECT_PROPERTIES_CONTENT = "android.library=true";
         #endregion
@@ -362,7 +362,7 @@ android {{
         {
             DeleteAdiscopeFrameworks(usingFrameworks); // 사용 안 하는 adapter edm4u 파일 삭제
             CreateAdiscopeFrameworksDirectory(); // edm4u 파일을 copy 할 폴더 생성
-            return FileDownloadEdm4uAdapter(usingFrameworks, isProgress); // edm4u 파일 다운로드
+            return CreateEdm4uAdapterFiles(usingFrameworks, isProgress); // 활성화된 adapter의 edm4u 파일 생성
         }
 
         private static void DeleteAdiscopeFrameworks(List<AdiscopeFrameworkAndroidType> usingFrameworks)
@@ -416,7 +416,7 @@ android {{
             }
         }
 
-        private static bool FileDownloadEdm4uAdapter(List<AdiscopeFrameworkAndroidType> usingFrameworks, bool isProgress)
+        private static bool CreateEdm4uAdapterFiles(List<AdiscopeFrameworkAndroidType> usingFrameworks, bool isProgress)
         {
             float progress = 0.4f / usingFrameworks.Count;
             float totalProgress = 0.1f + progress;
@@ -431,7 +431,7 @@ android {{
                 if (isProgress) {
                     if (EditorUtility.DisplayCancelableProgressBar(
                             DISPLAY_PROGRESS_DIALOG_TITLE,
-                            "Download Adapter Files",
+                            "Create Adapter Files",
                             totalProgress))
                     {
                         EditorUtility.ClearProgressBar();
@@ -441,7 +441,7 @@ android {{
                     totalProgress += progress;
                 }
 
-                if(!DownloadAdapterFile(type.GetFilePath(), type.GetFileName())){
+                if(!CreateAdapterFile(type.GetFileName())){
                     EditorUtility.ClearProgressBar();
                     EditorUtility.DisplayDialog("Failed to install", "파일 생성 실패", "닫기");
                     return false;
@@ -451,20 +451,21 @@ android {{
             return true;
         }
 
-        private static bool DownloadAdapterFile(string file_path, string file_name)
+        // 패키지에 내장된 템플릿(.txt)을 EDM4U가 인식하는 xml로 생성
+        // AssetDatabase 대신 파일 IO로 읽어 호출 시점(에셋 import 중 등)과 무관하게 동작하도록 함
+        private static bool CreateAdapterFile(string file_name)
         {
-            string uriString = file_path;
-            uriString += file_name;
+            string templatePath = Path.GetFullPath(PATH_ADAPTER_TEMPLATES + Path.ChangeExtension(file_name, ".txt"));
             try
             {
-                Debug.Log("DownloadAdapterFile : " + uriString);
-                (new WebClient()).DownloadFile(
-                    new Uri(uriString),
-                    Path.Combine(Application.dataPath + PATH_ADISCOPE_EDITOR, file_name)
+                Debug.Log("CreateAdapterFile : " + templatePath);
+                File.WriteAllText(
+                    Path.Combine(Application.dataPath + PATH_ADISCOPE_EDITOR, file_name),
+                    File.ReadAllText(templatePath)
                 );
             }
-            catch (Exception exception) { 
-                Debug.LogError("failed to download adapter file: " + exception.Message);
+            catch (Exception exception) {
+                Debug.LogError("failed to create adapter file: " + exception.Message);
                 EditorUtility.ClearProgressBar();
                 return false;
             }
@@ -512,17 +513,6 @@ android {{
         private const string TAPJOY_FILE_NAME       = "TapjoyDependencies.xml";
         private const string TNKPUB_FILE_NAME       = "TnkpubDependencies.xml";
 
-
-        // private const string ADISCOPE_FILE_PATH = "https://github.com/adiscope/Adiscope-Android-Sample/releases/download/";
-        private const string ADISCOPE_FILE_PATH = "https://github.com/adiscope/Adiscope-Unity-UPM-Beta/releases/download/";
-        private const string LUCKY_EVENT_FILE_PATH  = ADISCOPE_FILE_PATH + "5.3.0/";
-        private const string ADMOB_FILE_PATH        = ADISCOPE_FILE_PATH + "5.5.0/";
-        private const string CHARTBOOST_FILE_PATH   = ADISCOPE_FILE_PATH + "5.5.0/";
-        private const string MAX_FILE_PATH          = ADISCOPE_FILE_PATH + "5.5.0/";
-        private const string PANGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.5.0/";
-        private const string VUNGLE_FILE_PATH       = ADISCOPE_FILE_PATH + "5.5.0/";
-        private const string TNKPUB_FILE_PATH       = ADISCOPE_FILE_PATH + "5.5.0/";
-
         public static string GetFileName(this AdiscopeFrameworkAndroidType type)
         {
             switch (type)
@@ -542,21 +532,6 @@ android {{
                 case AdiscopeFrameworkAndroidType.Smaato:       return SMAATO_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.Tapjoy:       return TAPJOY_FILE_NAME;
                 case AdiscopeFrameworkAndroidType.Tnkpub:       return TNKPUB_FILE_NAME;
-                default:                                        return null;
-            }
-        }
-
-        public static string GetFilePath(this AdiscopeFrameworkAndroidType type)
-        {
-            switch (type)
-            {
-                case AdiscopeFrameworkAndroidType.LuckyEvent:   return LUCKY_EVENT_FILE_PATH;
-                case AdiscopeFrameworkAndroidType.Admob:        return ADMOB_FILE_PATH;
-                case AdiscopeFrameworkAndroidType.ChartBoost:   return CHARTBOOST_FILE_PATH;
-                case AdiscopeFrameworkAndroidType.MAX:          return MAX_FILE_PATH;
-                case AdiscopeFrameworkAndroidType.Pangle:       return PANGLE_FILE_PATH;
-                case AdiscopeFrameworkAndroidType.Vungle:       return VUNGLE_FILE_PATH;
-                case AdiscopeFrameworkAndroidType.Tnkpub:       return TNKPUB_FILE_PATH;
                 default:                                        return null;
             }
         }

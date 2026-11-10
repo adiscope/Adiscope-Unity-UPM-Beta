@@ -151,6 +151,21 @@ namespace Adiscope.Internal.Platform.MockPlatform
 #endif
             return true;
         }
+
+        public bool Show(string unitId, string[] filters, string placement)
+        {
+            return Show(unitId, filters);
+        }
+
+        public bool ShowOfferwallDetail(string unitId, string[] filters, string itemId, string placement)
+        {
+            return ShowOfferwallDetail(unitId, filters, itemId);
+        }
+
+        public bool ShowOfferwallDetailFromUrl(string url, string placement)
+        {
+            return ShowOfferwallDetailFromUrl(url);
+        }
         #endregion
     }
 }

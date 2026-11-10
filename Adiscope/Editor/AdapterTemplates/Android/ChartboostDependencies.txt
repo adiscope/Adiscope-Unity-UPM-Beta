@@ -1,0 +1,8 @@
+<dependencies>
+  <androidPackages>
+    <repositories>
+      <repository>https://cboost.jfrog.io/artifactory/chartboost-ads/</repository>
+    </repositories>
+    <androidPackage spec="com.nps.adiscope:adapter.chartboost:9.14.0.1.1" />
+  </androidPackages>
+</dependencies>

@@ -1,0 +1,8 @@
+<dependencies>
+  <androidPackages>
+    <repositories>
+      <repository>https://artifact.bytedance.com/repository/pangle</repository>
+    </repositories>
+    <androidPackage spec="com.nps.adiscope:adapter.pangle:8.1.0.5.1.1" />
+  </androidPackages>
+</dependencies>

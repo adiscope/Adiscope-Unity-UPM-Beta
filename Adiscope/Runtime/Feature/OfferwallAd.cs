@@ -37,8 +37,6 @@ namespace Adiscope.Feature
 
         private OfferwallAd()
         {
-            // 초기화 전에 광고 객체만 먼저 가져와도 네이티브 콜백(load/show fail 등)이 메인 스레드로 전달되도록 보장
-            Adiscope.Internal.UnityThread.initUnityThread(true);
             this.client = ClientBuilder.BuildOfferwallAdClient();
 
             this.client.OnOpened += (sender, args) => { OnOpened?.Invoke(sender, args); };
@@ -87,6 +85,32 @@ namespace Adiscope.Feature
         public bool ShowOfferwallDetailFromUrl(string url)
         {
             return client.ShowOfferwallDetailFromUrl(url);
+        }
+
+        public bool Show(string unitId, OfferwallFilterType[] filters, string placement)
+        {
+            return client.Show(unitId, ToFilterStrings(filters), placement);
+        }
+
+        public bool ShowOfferwallDetail(string unitId, OfferwallFilterType[] filters, string itemId, string placement)
+        {
+            return client.ShowOfferwallDetail(unitId, ToFilterStrings(filters), itemId, placement);
+        }
+
+        public bool ShowOfferwallDetailFromUrl(string url, string placement)
+        {
+            return client.ShowOfferwallDetailFromUrl(url, placement);
+        }
+
+        private static string[] ToFilterStrings(OfferwallFilterType[] filters)
+        {
+            List<string> array = new List<string>();
+
+            foreach (OfferwallFilterType filter in filters)
+            {
+                array.Add(filter.ToString());
+            }
+            return array.ToArray();
         }
     }
 }

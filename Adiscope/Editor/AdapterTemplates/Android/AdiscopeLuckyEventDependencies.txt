@@ -1,0 +1,5 @@
+<dependencies>
+  <androidPackages>
+    <androidPackage spec="com.nps.adiscope:adiscopeLuckyEvent:5.1.18" />
+  </androidPackages>
+</dependencies>

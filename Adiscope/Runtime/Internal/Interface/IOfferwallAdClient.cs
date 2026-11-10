@@ -26,6 +26,10 @@ namespace Adiscope.Internal.Interface
 
         bool ShowOfferwallDetailFromUrl(string url);
 
-        
+        bool Show(string unitId, string[] filters, string placement);
+
+        bool ShowOfferwallDetail(string unitId, string[] filters, string itemId, string placement);
+
+        bool ShowOfferwallDetailFromUrl(string url, string placement);
     }
 }
